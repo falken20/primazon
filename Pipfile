@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+rich = "==11.2.0"
+python-dotenv = "*"
+Flask = "*"
+
+[dev-packages]
+# Tests
+coverage
+pytest
+mock
+flake8 # Linter checks, like pytest 
+
+[requires]
+python_version = "3.8"

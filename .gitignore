@@ -1,6 +1,7 @@
 # Falken
 temp/
 venv/
+.venv/
 #*.sqlite3
 
 # IDE folders
