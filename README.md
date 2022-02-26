@@ -16,8 +16,6 @@ Flask web where you can save products from Amazon to observe prices along a peri
 
 ##### Setup
 
-Compatible with Python 3.6+.
-
 ```bash
 pip install -r requirements.txt
 ```
