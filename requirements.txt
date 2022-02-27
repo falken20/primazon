@@ -1,4 +1,0 @@
-# App
-rich
-python-dotenv
-flask
