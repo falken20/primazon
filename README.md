@@ -17,7 +17,7 @@ Flask web where you can save products from Amazon to observe prices along a peri
 ##### Setup
 
 ```bash
-pip install -r requirements.txt
+pipenv install
 ```
 
 ##### Running the app
@@ -29,7 +29,7 @@ python ./src/primazon.py
 ##### Setup tests
 
 ```bash
-pip install -r requirements-tests.txt
+pipenv install --dev
 ```
 
 ##### Running the tests with pytest and coverage
@@ -39,5 +39,5 @@ pip install -r requirements-tests.txt
 ```
 or
 ```bash
-coverage run -m pytest -v && coverage html --omit=*/venv/*,*/test/*
+coverage run -m pytest -v && coverage html --omit=*/venv/*,*/tests/*
 ```
