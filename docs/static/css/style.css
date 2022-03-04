@@ -4,3 +4,7 @@ h1 {
     text-align: center;
     padding: 10px;
 }
+
+body {
+	padding-top: 75px; /* Relleno superior igual a la altura de la cabecera*/
+}

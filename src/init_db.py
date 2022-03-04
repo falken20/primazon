@@ -13,18 +13,38 @@ from rich.console import Console
 # Load .env file
 load_dotenv(find_dotenv())
 
+# Create console object
+console = Console()
 
-def main():
-    console = Console()
-    console.print("[bold green]Process starting...[/bold green]")
 
+def get_db_connection():
+    """
+    Return a connection to the database
+
+    Returns:
+        connection: The connection to the database
+    """
     try:
-        console.print("Connecting with [bold]DB[/bold]...", style="blue")
-        conn = psycopg2.connect(
+        return psycopg2.connect(
             host="localhost",
             database=os.environ['DB_DATABASE'],
             user=os.environ['DB_USERNAME'],
             password=os.environ['DB_PASSWORD'])
+    except Exception as err:
+        console.print(
+            f"[red bold]Error getting connection to DB...: {format(err)}")
+        return False
+
+
+def main():
+    """
+    Main process to create the needed tables for the application
+    """
+    console.print("[bold green]Process starting...[/bold green]")
+
+    try:
+        console.print("Connecting with [bold]DB[/bold]...", style="blue")
+        conn = get_db_connection()
 
         # Open a cursor to perform database operations
         cur = conn.cursor()
@@ -33,7 +53,8 @@ def main():
         if input("Could you drop the tables if they exist (y/n)? ") in ["Y", "y"]:
             console.print("Drop table [bold]t_prices[/bold]...", style="blue")
             cur.execute('DROP TABLE IF EXISTS t_prices;')
-            console.print("Drop table [bold]t_products[/bold]...", style="blue")
+            console.print(
+                "Drop table [bold]t_products[/bold]...", style="blue")
             cur.execute('DROP TABLE IF EXISTS t_products;')
 
         # Execute a command: this creates a new table
@@ -42,7 +63,10 @@ def main():
                     '(product_id serial PRIMARY KEY,'
                     'product_url varchar (500) NOT NULL,'
                     'product_desc varchar (150) NOT NULL,'
+                    'product_url_photo varchar (500) NOT NULL,'
                     'product_price float NOT NULL,'
+                    'product_min_price float NOT NULL,'
+                    'product_max_price float NOT NULL,'
                     'product_date_added date DEFAULT CURRENT_TIMESTAMP,'
                     'product_date_updated date);'
                     )
@@ -60,6 +84,16 @@ def main():
 
         conn.commit()
 
+        # Grant privileges on tables and on sequences. IT SHOULD BE USED MASTER USER
+        console.print(
+            "Grant privileges on schema [bold]public[/bold]...", style="blue")
+        cur.execute('GRANT ALL ON ALL TABLES IN SCHEMA public TO admin;')
+        cur.execute('GRANT ALL ON ALL TABLES IN SCHEMA public TO user_primazon;')
+        console.print(
+            "Grant privileges in sequences on schema [bold]public[/bold]...", style="blue")
+        cur.execute('GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO admin;')
+        cur.execute('GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO user_primazon;')
+
         console.print(
             "Closing connection with [bold]DB[/bold]...", style="blue")
         cur.close()
@@ -68,7 +102,6 @@ def main():
 
     except Exception as err:
         console.print(f"[red bold]EXECUTION ERROR: {format(err)}")
-        return False
 
 
 if __name__ == "__main__":
