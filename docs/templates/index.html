@@ -1,8 +1,43 @@
-
 {% extends 'base.html' %}
 
 {% block content %}
 
-<h1>{% block title %} Welcome to Primazon {% endblock %}</h1>
+<div>
+    <table class="table table-striped">
+        <tbody>
+        {% for product in products %}
 
+            <tr style="font-size:smaller;">
+                <td>
+                    <img src="https://m.media-amazon.com/images/I/71bhWgQK-cL._AC_SX679_.jpg" height="60">
+                </td>
+                <td style="width:80%"> 
+                    <div><a href="{{ product[1] }}" target="_blank">{{ product[2] }}</a></div>
+                    <div>PVP: {{ product[3] }} </div>
+                    <div>Last Date: {{ product[5] }} </div>
+                    <div><small>Min price: {{ product[6] }}</small><small>Max price: {{ product[7] }}</small></div>
+                </td>
+                <td>
+                    <form action=""
+                            style="display: inline;"
+                            method="POST">
+                        <input type="submit" value="Edit" class="btn btn-success btn-sm btn-block">
+                    </form>
+
+                    <div style="margin-top: 1px;">
+                        <form action="/books/delete_book/{{product.id}}/"
+                              style="display: inline;"
+                              method="POST">
+                            <input type="submit" value="Delete" class="btn btn-danger btn-sm btn-block">
+                        </form>
+                    </div>
+                </td>
+            </tr>
+
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock content %}
+
+
