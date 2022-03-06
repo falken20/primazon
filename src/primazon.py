@@ -46,8 +46,8 @@ def create_product():
             product_url_photo = request.form['product_url_photo']
             product_price = request.form['product_price'] if request.form['product_price'] else 0
 
-            sql = f"INSERT INTO t_products (product_url, product_desc, product_url_photo, product_price)"
-            sql += f" VALUES ('{product_url}', '{product_desc}', '{product_url_photo}', {product_price})"
+            sql = f"INSERT INTO t_products (product_url, product_desc, product_url_photo, product_price, product_min_price, product_max_price)"
+            sql += f" VALUES ('{product_url}', '{product_desc}', '{product_url_photo}', {product_price}, {product_price}, {product_price})"
 
             init_db.exec_sql_statement(sql)
 
@@ -57,3 +57,21 @@ def create_product():
     except Exception as err:
         console.print(
             f"[red bold][Line {sys.exc_info()[2].tb_lineno} {type(err).__name__}] Error showing [bold]create product[/bold] page...: {format(err)}")
+
+
+@app.route('/delete/<int:product_id>')
+def delete_product(product_id):
+    try:
+        console.print(
+            "Method to [bold]delete product[/bold]...", style="blue")   
+
+        sql = f"DELETE FROM t_products WHERE product_id = {product_id}"  
+        init_db.exec_sql_statement(sql)
+
+        return redirect(url_for('index'))
+
+    except Exception as err:
+        console.print(
+            f"[red bold][Line {sys.exc_info()[2].tb_lineno} {type(err).__name__}] Error in [bold]delete product[/bold] method...: {format(err)}")        
+
+
