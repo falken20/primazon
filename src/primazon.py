@@ -7,7 +7,7 @@ from flask import Flask, render_template, url_for, request, redirect
 import psycopg2
 from rich.console import Console
 
-from . import init_db
+from . import utils_db, products, prices
 
 
 app = Flask(__name__, template_folder='../docs/templates',
@@ -23,10 +23,9 @@ console = Console()
 def index():
     console.print("Method to show [bold]index[/bold] page...", style="blue")
     # Get all the products
-    sql = 'SELECT * FROM t_products;'
-    products = init_db.exec_sql_statement(sql)
+    query = products.get_all_products()
 
-    return render_template('product_list.html', products=products)
+    return render_template('product_list.html', products=query)
 
 
 @app.route('/about/')
@@ -41,22 +40,18 @@ def create_product():
         console.print(
             "Method to show [bold]create product[/bold] page...", style="blue")
         if request.method == 'POST':
-            product_url = request.form['product_url']
-            product_desc = request.form['product_desc']
-            product_url_photo = request.form['product_url_photo']
-            product_price = request.form['product_price'] if request.form['product_price'] else 0
-
-            sql = f"INSERT INTO t_products (product_url, product_desc, product_url_photo, product_price, product_min_price, product_max_price)"
-            sql += f" VALUES ('{product_url}', '{product_desc}', '{product_url_photo}', {product_price}, {product_price}, {product_price})"
-
-            init_db.exec_sql_statement(sql)
-
+            print(request.form)
+            products.create_product(request.form)
             return redirect(url_for('index'))
 
         return render_template('product_form.html')
+
     except Exception as err:
         console.print(
-            f"[red bold][Line {sys.exc_info()[2].tb_lineno} {type(err).__name__}] Error showing [bold]create product[/bold] page...: {format(err)}")
+            f"Error showing create product page:" +
+            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
+            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
+            f"\n{format(err)}", style="red bold")
 
 
 @app.route('/delete/<int:product_id>')
@@ -64,14 +59,14 @@ def delete_product(product_id):
     try:
         console.print(
             "Method to [bold]delete product[/bold]...", style="blue")   
-
-        sql = f"DELETE FROM t_products WHERE product_id = {product_id}"  
-        init_db.exec_sql_statement(sql)
+        products.delete_product(product_id)
 
         return redirect(url_for('index'))
 
     except Exception as err:
         console.print(
-            f"[red bold][Line {sys.exc_info()[2].tb_lineno} {type(err).__name__}] Error in [bold]delete product[/bold] method...: {format(err)}")        
-
+            f"Error in delete_product method:" +
+            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
+            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
+            f"\n{format(err)}", style="red bold")
 
