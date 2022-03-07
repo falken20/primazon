@@ -18,14 +18,12 @@
                     <div><small>Min price: {{ product[5] }} </small><small>Max price: {{ product[6] }}</small></div>
                 </td>
                 <td>
-                    <form action=""
-                            style="display: inline;"
-                            method="POST">
-                        <input type="submit" value="Edit" class="btn btn-success btn-sm btn-block">
-                    </form>
+                    <div style="margin-top: 1px;">
+                        <a class="btn btn-success btn-sm btn-block" href="{{url_for('delete_product', product_id=product[0])}}">Edit</a>
+                    </div>
 
                     <div style="margin-top: 1px;">
-                        <a href="{{url_for('delete_product', product_id=product[0])}}">Delete</a>
+                        <a class="btn btn-danger btn-sm btn-block" href="{{url_for('delete_product', product_id=product[0])}}">Delete</a>
                     </div>
                 </td>
             </tr>

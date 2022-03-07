@@ -35,7 +35,10 @@ def get_db_connection():
             password=os.environ['DB_PASSWORD'])
     except Exception as err:
         console.print(
-            f"[red bold][Line {sys.exc_info()[2].tb_lineno} {type(err).__name__}] Error getting connection to DB...: {format(err)}")
+            f"Error getting connection to DB:" +
+            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
+            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
+            f"\n{format(err)}", style="red bold")
         return False
 
 
@@ -54,7 +57,10 @@ def drop_tables(cur):
         cur.execute('DROP TABLE IF EXISTS t_products;')
     except Exception as err:
         console.print(
-            f"[red bold][Line {sys.exc_info()[2].tb_lineno} {type(err).__name__}] Error dropping tables from DB...: {format(err)}")
+            f"Error dropping tables from DB:" +
+            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
+            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
+            f"\n{format(err)}", style="red bold")
 
 
 def create_table_products(cur):
@@ -79,7 +85,10 @@ def create_table_products(cur):
                     )
     except Exception as err:
         console.print(
-            f"[red bold][Line {sys.exc_info()[2].tb_lineno} {type(err).__name__}] Error creating t_products...: {format(err)}")
+            f"Error creating t_products:" +
+            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
+            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
+            f"\n{format(err)}", style="red bold")
 
 
 def create_table_prices(cur):
@@ -102,7 +111,10 @@ def create_table_prices(cur):
                     )
     except Exception as err:
         console.print(
-            f"[red bold][Line {sys.exc_info()[2].tb_lineno} {type(err).__name__}] Error creating t_prices...: {format(err)}")
+            f"Error creating t_prices:" +
+            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
+            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
+            f"\n{format(err)}", style="red bold")
 
 
 def grant_privileges(cur, user):
@@ -122,7 +134,10 @@ def grant_privileges(cur, user):
             f'GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO {user};')
     except Exception as err:
         console.print(
-            f"[red bold][Line {sys.exc_info()[2].tb_lineno} {type(err).__name__}] Error gratting privileges on tables for user {user}...: {format(err)}")
+            f"Error gratting privileges on tables for user {user}:" +
+            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
+            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
+            f"\n{format(err)}", style="red bold")
 
 
 def exec_sql_statement(sql):
@@ -149,7 +164,10 @@ def exec_sql_statement(sql):
         return result
     except Exception as err:
         console.print(
-            f"[red bold][Line {sys.exc_info()[2].tb_lineno} {type(err).__name__}] Error executing sql statement...: {format(err)}")
+            f"Error executing sql statement:" +
+            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
+            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
+            f"\n{format(err)}", style="red bold")
 
 
 def main():
@@ -185,7 +203,10 @@ def main():
 
     except Exception as err:
         console.print(
-            f"[red bold][Line {sys.exc_info()[2].tb_lineno} {type(err).__name__}] EXECUTION ERROR: {format(err)}")
+            f"Execution Error:" +
+            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
+            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
+            f"\n{format(err)}", style="red bold")
 
 
 if __name__ == "__main__":
