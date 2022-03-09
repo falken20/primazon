@@ -40,7 +40,6 @@ def create_product():
         console.print(
             "Method to show [bold]create product[/bold] page...", style="blue")
         if request.method == 'POST':
-            print(request.form)
             products.create_product(request.form)
             return redirect(url_for('index'))
 
@@ -58,7 +57,7 @@ def create_product():
 def delete_product(product_id):
     try:
         console.print(
-            "Method to [bold]delete product[/bold]...", style="blue")   
+            "Method to [bold]delete product[/bold]...", style="blue")
         products.delete_product(product_id)
 
         return redirect(url_for('index'))
@@ -70,3 +69,19 @@ def delete_product(product_id):
             f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
             f"\n{format(err)}", style="red bold")
 
+
+@app.route('/edit/<int:product_id>')
+def edit_product(product_id):
+    try:
+        console.print(
+            "Method to [bold]edit product[/bold]...", style="blue")
+        product = products.get_product(product_id)
+
+        return render_template('product_form.html', product=product)
+
+    except Exception as err:
+        console.print(
+            f"Error in edit_product method:" +
+            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
+            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
+            f"\n{format(err)}", style="red bold")
