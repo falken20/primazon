@@ -23,9 +23,9 @@ console = Console()
 def index():
     console.print("Method to show [bold]index[/bold] page...", style="blue")
     # Get all the products
-    query = products.get_all_products()
+    all_products = products.get_all_products()
 
-    return render_template('product_list.html', products=query)
+    return render_template('product_list.html', products=all_products)
 
 
 @app.route('/about/')
@@ -34,7 +34,7 @@ def about():
     return render_template('about.html')
 
 
-@app.route('/add/', methods=('GET', 'POST'))
+@app.route('/products/add/', methods=('GET', 'POST'))
 def create_product():
     try:
         console.print(
@@ -53,7 +53,7 @@ def create_product():
             f"\n{format(err)}", style="red bold")
 
 
-@app.route('/delete/<int:product_id>')
+@app.route('/products/delete/<int:product_id>')
 def delete_product(product_id):
     try:
         console.print(
@@ -70,14 +70,31 @@ def delete_product(product_id):
             f"\n{format(err)}", style="red bold")
 
 
-@app.route('/edit/<int:product_id>')
+@app.route('/products/edit/<int:product_id>')
 def edit_product(product_id):
     try:
         console.print(
             "Method to [bold]edit product[/bold]...", style="blue")
         product = products.get_product(product_id)
 
-        return render_template('product_form.html', product=product)
+        return render_template('product_edit.html', product=product)
+
+    except Exception as err:
+        console.print(
+            f"Error in edit_product method:" +
+            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
+            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
+            f"\n{format(err)}", style="red bold")
+
+
+@app.route('/products/update', methods=["POST"])
+def update_product():
+    try:
+        console.print(
+            "Method to [bold]update product[/bold]...", style="blue")
+        products.update_product(request.form)
+
+        return redirect(url_for('index'))
 
     except Exception as err:
         console.print(

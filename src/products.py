@@ -34,7 +34,7 @@ def get_product(product_id):
     Returns:
         list[Tuple]: Fields from the product searched
     """
-    sql = 'SELECT * FROM t_products WHERE product_id = {product_id};'
+    sql = f'SELECT * FROM t_products WHERE product_id = {product_id};'
     product = utils_db.exec_sql_statement(sql)
 
     return product
@@ -91,6 +91,41 @@ def delete_product(product_id):
     except Exception as err:
         console.print(
             f"Error in method delete_product:" +
+            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
+            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
+            f"\n{format(err)}", style="red bold")
+        return False
+
+
+def update_product(values):
+    """
+    Update a product in the database
+
+    Args:
+        values (ImmutableMultiDict[str, str]): key/value pairs in the body, from a HTML post form
+
+    Returns:
+        boolean: True if everything ok, False in other case
+    """
+    try:
+        product_id = values.get('product_id')
+        product_url = values.get('product_url')
+        product_desc = values.get('product_desc')
+        product_url_photo = values.get('product_url_photo')
+        product_price = values.get(
+            'product_price') if values.get('product_price') else 0
+
+        sql = f"UPDATE t_products"
+        sql += f" SET product_url = '{product_url}', product_desc = '{product_desc}', "
+        sql += f" product_url_photo = '{product_url_photo}', product_price = {product_price}"
+        sql += f" WHERE product_id = {product_id}"
+
+        utils_db.exec_sql_statement(sql)
+
+        return True
+    except Exception as err:
+        console.print(
+            f"Error in method create_product:" +
             f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
             f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
             f"\n{format(err)}", style="red bold")
