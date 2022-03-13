@@ -8,6 +8,10 @@ rich = "==11.2.0"
 python-dotenv = "*"
 Flask = ">=2.0.3"
 psycopg2 = "*"
+pandas = "*"
+lxml = "*"
+html5lib = "*"
+beautifulsoup4 = "*"
 
 [dev-packages]
 coverage = "*"
