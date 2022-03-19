@@ -2,7 +2,7 @@ name:
     css: '#productTitle'
     type: Text
 price:
-    css: '.a-offscreen'
+    css: '.a-offscreen' # Original is #price_inside_buybox
     type: Text
 short_description:
     css: '#featurebullets_feature_div'
