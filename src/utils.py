@@ -29,6 +29,19 @@ headers = {
 }
 
 
+def scrap_by_selectorlib(page):
+    extractor = Extractor.from_yaml_file(os.path.join(
+        os.path.dirname(__file__), 'selectors.yml'))
+    return extractor.extract(page.text)
+
+
+def scrap_by_beautifulsoup(page):
+    soup = BeautifulSoup(page.content, "html.parser")
+    print(soup.find(id="productTitle").text.strip())  # By DOM element id
+    # By DOM element class
+    return soup.find(class_="a-offscreen").text.strip()
+
+
 def scrap_web(url):
     """
     Scrap a url web to extract different data
@@ -48,15 +61,15 @@ def scrap_web(url):
                 console. print("Page %s must have been blocked by Amazon as the status code was %d" % (
                     url, page.status_code), style="bold red")
                 return None
-
-        soup = BeautifulSoup(page.content, "html.parser")
-        print(soup.find(id="productTitle").text.strip())  # By DOM element id
-        # By DOM element class
-        print(soup.find(class_="a-offscreen").text.strip())
-
-        extractor = Extractor.from_yaml_file(os.path.join(
-            os.path.dirname(__file__), 'selectors.yml'))
-        print(extractor.extract(page.text))
+        
+        #scrap_by_beautifulsoup(page)
+        data_product = scrap_by_selectorlib(page)
+        print(data_product['name'])
+        print(data_product['price'])
+        print(data_product['images'])
+        print(data_product['rating'])
+        print(data_product['number_of_reviews'])
+        print(data_product['sales_rank'])
 
         console.print("[bold green]Process finished succesfully[/bold green]")
 
