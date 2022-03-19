@@ -40,13 +40,22 @@ def scrap_web(url):
         url = "https://www.amazon.es/gp/product/B09JR6YL4B"
 
         page = requests.get(url, headers=headers)
+        if page.status_code > 500:
+            if "To discuss automated access to Amazon data please contact" in page.text:
+                console.print(
+                    "Page %s was blocked by Amazon. Please try using better proxies\n" % url, style="bold red")
+            else:
+                console. print("Page %s must have been blocked by Amazon as the status code was %d" % (
+                    url, page.status_code), style="bold red")
+                return None
 
         soup = BeautifulSoup(page.content, "html.parser")
         print(soup.find(id="productTitle").text.strip())  # By DOM element id
         # By DOM element class
         print(soup.find(class_="a-offscreen").text.strip())
 
-        extractor = Extractor.from_yaml_file(os.path.join(os.path.dirname(__file__), 'selectors.yml'))
+        extractor = Extractor.from_yaml_file(os.path.join(
+            os.path.dirname(__file__), 'selectors.yml'))
         print(extractor.extract(page.text))
 
         console.print("[bold green]Process finished succesfully[/bold green]")
