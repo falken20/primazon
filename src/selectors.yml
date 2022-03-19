@@ -2,7 +2,7 @@ name:
     css: '#productTitle'
     type: Text
 price:
-    css: '.a-offscreen' # Original is #price_inside_buybox
+    css: '.a-offscreen' # '#price_inside_buybox'
     type: Text
 short_description:
     css: '#featurebullets_feature_div'
@@ -12,10 +12,10 @@ images:
     type: Attribute
     attribute: data-a-dynamic-image
 rating:
-    css: span.arp-rating-out-of-text
+    css: '.a-icon-alt' # 'span.arp-rating-out-of-text'
     type: Text
 number_of_reviews:
-    css: 'a.a-link-normal h2'
+    css: 'acrCustomerReviewText' # 'a.a-link-normal h2'
     type: Text
 variants:
     css: 'form.a-section li'
