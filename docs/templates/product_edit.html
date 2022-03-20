@@ -30,6 +30,14 @@
           </div>
         </div>
       </div>
+      <div class="form-group">
+        <label for="product_rating">Rating</label>
+        <input type="text" class="form-control" id="product_rating" name="product_rating" value={{ prod[5] }} readonly>
+      </div>
+      <div class="form-group">
+        <label for="product_reviews">Reviews</label>
+        <input type="text" class="form-control" id="product_reviews" name="product_reviews" value={{ prod[6] }} readonly>
+      </div>
       {% endfor %}
 
       <button type="submit" class="btn btn-primary">Save</button>

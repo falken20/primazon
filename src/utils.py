@@ -3,6 +3,7 @@ import sys
 import os
 from click import style
 import requests
+import json
 
 from rich.console import Console
 from selectorlib import Extractor
@@ -30,12 +31,36 @@ headers = {
 
 
 def scrap_by_selectorlib(page):
+    """
+    Scrap web using selectorlib library
+
+    Args:
+        page (str): Url to scrap
+
+    Returns:
+        dict: product data
+    """
     extractor = Extractor.from_yaml_file(os.path.join(
         os.path.dirname(__file__), 'selectors.yml'))
-    return extractor.extract(page.text)
+    data_product = extractor.extract(page.text)
+
+    # Get only the first image, its a string dict so that it is necessary
+    # to use json.loads to get a dict, after that it takes the first image
+    data_product['images'] = next(iter(json.loads(data_product['images'])))
+    
+    return data_product
 
 
 def scrap_by_beautifulsoup(page):
+    """
+    Scrap web using beautifulsoup library
+
+    Args:
+        page (str): Url to scrap
+
+    Returns:
+        dict: product data
+    """
     soup = BeautifulSoup(page.content, "html.parser")
     print(soup.find(id="productTitle").text.strip())  # By DOM element id
     # By DOM element class
@@ -61,15 +86,11 @@ def scrap_web(url):
                 console. print("Page %s must have been blocked by Amazon as the status code was %d" % (
                     url, page.status_code), style="bold red")
                 return None
-        
-        #scrap_by_beautifulsoup(page)
+
+        # scrap_by_beautifulsoup(page)
         data_product = scrap_by_selectorlib(page)
-        print(data_product['name'])
-        print(data_product['price'])
-        print(data_product['images'])
-        print(data_product['rating'])
-        print(data_product['number_of_reviews'])
-        print(data_product['sales_rank'])
+
+        print(data_product)
 
         console.print("[bold green]Process finished succesfully[/bold green]")
 

@@ -78,6 +78,8 @@ def create_table_products(cur):
                     'product_desc varchar (150) NOT NULL,'
                     'product_url_photo varchar (500) NOT NULL,'
                     'product_price float,'
+                    'product_rating varchar(50),'
+                    'product_reviews varchar(100),'
                     'product_min_price float,'
                     'product_max_price float,'
                     'product_date_added date DEFAULT CURRENT_TIMESTAMP,'
