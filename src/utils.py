@@ -47,7 +47,7 @@ def scrap_by_selectorlib(page):
     # Get only the first image, its a string dict so that it is necessary
     # to use json.loads to get a dict, after that it takes the first image
     data_product['images'] = next(iter(json.loads(data_product['images'])))
-    
+
     return data_product
 
 
@@ -90,9 +90,10 @@ def scrap_web(url):
         # scrap_by_beautifulsoup(page)
         data_product = scrap_by_selectorlib(page)
 
-        print(data_product)
+        console.print(
+            "[bold green]Process scrap_web finished succesfully[/bold green]")
 
-        console.print("[bold green]Process finished succesfully[/bold green]")
+        return data_product
 
     except Exception as err:
         console.print(
