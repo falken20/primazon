@@ -3,9 +3,9 @@
 from crypt import methods
 import os
 import sys
-import re
 from click import style
 from flask import Flask, render_template, url_for, request, redirect
+from numpy import product
 import psycopg2
 from rich.console import Console
 
@@ -112,21 +112,30 @@ def refresh_data(product_id):
     try:
         console.print(f"Method to [bold]refresh data product[/bold] with id: {product_id}", style="blue")
 
-        product_url = products.get_product(product_id)[0][1]
+        product = products.get_product(product_id)[0]
+        product_url = product[1]
+        console.print(f"Product to check: {product}", style="blue")
+        console.print(f"Amazon url to check: {product_url}", style="blue")
 
         amazon_data = utils.scrap_web(product_url)
-        
-        product_to_update = dict()
-        product_to_update['product_id'] = product_id
-        product_to_update['product_url'] = product_url
-        product_to_update['product_desc'] = amazon_data['name']
-        product_to_update['product_url_photo'] = amazon_data['images']
+        console.print(f"Getting [bold]Amazon[/bold] data: {amazon_data}", style="blue")
 
-        float_price = re.findall("\d+\.\d+", amazon_data['price'])
-        print(float_price)
-        product_to_update['product_price'] = float_price if float_price else 0
+        if amazon_data is None:
+            console.print(f"Impossible to get data from Amazon for the product url '{product_url}'", style="red bold")
+        else:
+            product_to_update = dict()
+            product_to_update['product_id'] = product_id
+            product_to_update['product_url'] = product_url
+            product_to_update['product_desc'] = amazon_data['name'][0:150]
+            product_to_update['product_url_photo'] = amazon_data['images']
 
-        products.update_product(product_to_update)
+            float_price = float(amazon_data['price'].replace('.', '').replace(',', '.').replace('€',''))
+            print(float_price)
+            product_to_update['product_price'] = float_price if float_price else 0
+            product_to_update['product_rating'] = amazon_data['rating']
+            product_to_update['product_reviews'] = amazon_data['reviews']
+
+            products.update_product(product_to_update)
 
         return redirect(url_for('index'))
         # return redirect(url_for('edit_product', product_id=product_id))

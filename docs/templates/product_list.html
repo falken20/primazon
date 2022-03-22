@@ -2,22 +2,25 @@
 
 {% block content %}
 
-<div>
+<div class="container">
+
     <table class="table table-striped">
         <tbody>
         {% for product in products %}
 
             <tr style="font-size:smaller;">
-                <td>
-                    <img src="{{ product[3] }}" height="60">
+                <td style="width: 5%; text-align: center;">
+                    <img src="{{ product[3] }}" height="70">
                 </td>
                 <td style="width:80%"> 
-                    <div><a href="{{ product[1] }}" target="_blank">{{ product[2] }}</a></div>
-                    <div>PVP: {{ product[4] }} </div>
-                    <div>Update Date: {{ product[10] }} </div>
-                    <div><small>Rating: {{ product[5] }} </small></div>
-                    <div><small>Reviews: {{ product[6] }}</small></div>
-                    <div><small>Min price: {{ product[7] }} </small><small>Max price: {{ product[8] }}</small></div>
+                    <div style="font-weight: bold;">
+                        <a href="{{ product[1] }}" target="_blank">{{ product[2] }}</a>
+                    </div>
+                    <div style="font-weight: bold; font-size: medium;">{{ product[4] }} €</div>
+                    <div style="font-weight: bold;">Update Date: {{ product[10] }} </div>
+                    <div><small style="color:red;font-weight: bold;">{{ product[5] }} </small></div>
+                    <div><small style="color:red;font-weight: bold;">{{ product[6] }}</small></div>
+                    <div><small>Min price: {{ product[7] }} €</small><small> - Max price: {{ product[8] }} €</small></div>
                 </td>
                 <td>
                     <div style="margin-top: 5px;">
