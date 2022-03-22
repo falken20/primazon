@@ -1,6 +1,7 @@
 # by Richi Rod AKA @richionline / falken20
 
 import sys
+import datetime
 from rich import console
 from rich.console import Console
 
@@ -18,7 +19,7 @@ def get_all_products():
     Returns:
         list[Tuple]: Rows from products database
     """
-    sql = 'SELECT * FROM t_products;'
+    sql = 'SELECT * FROM t_products ORDER BY product_id;'
     products = utils_db.exec_sql_statement(sql)
 
     return products
@@ -56,9 +57,13 @@ def create_product(values):
         product_url_photo = values.get('product_url_photo')
         product_price = values.get(
             'product_price') if values.get('product_price') else 0
+        product_rating = values.get('product_rating')
+        product_reviews = values.get('product_reviews')
 
-        sql = f"INSERT INTO t_products (product_url, product_desc, product_url_photo, product_price, product_min_price, product_max_price)"
-        sql += f" VALUES ('{product_url}', '{product_desc}', '{product_url_photo}', {product_price}, {product_price}, {product_price})"
+        sql = f"INSERT INTO t_products (product_url, product_desc, product_url_photo, product_price, product_rating, "
+        sql += f" product_reviews, product_min_price, product_max_price)"
+        sql += f" VALUES ('{product_url}', '{product_desc}', '{product_url_photo}', {product_price}, '{product_rating}',"
+        sql += f" '{product_reviews}', {product_price}, {product_price})"
 
         utils_db.exec_sql_statement(sql)
 
@@ -114,10 +119,14 @@ def update_product(values):
         product_url_photo = values.get('product_url_photo')
         product_price = values.get(
             'product_price') if values.get('product_price') else 0
+        product_rating = values.get('product_rating')
+        product_reviews = values.get('product_reviews')
 
         sql = f"UPDATE t_products"
         sql += f" SET product_url = '{product_url}', product_desc = '{product_desc}', "
-        sql += f" product_url_photo = '{product_url_photo}', product_price = {product_price}"
+        sql += f" product_url_photo = '{product_url_photo}', product_price = {product_price},"
+        sql += f" product_rating = '{product_rating}', product_reviews = '{product_reviews}',"
+        sql += f" product_date_updated = '{datetime.datetime.now()}'"
         sql += f" WHERE product_id = {product_id}"
 
         utils_db.exec_sql_statement(sql)

@@ -40,15 +40,27 @@ def scrap_by_selectorlib(page):
     Returns:
         dict: product data
     """
-    extractor = Extractor.from_yaml_file(os.path.join(
-        os.path.dirname(__file__), 'selectors.yml'))
-    data_product = extractor.extract(page.text)
+    try:
+        console.print(f"Method scrap_by_selectorlib to scrap the Amazon page...", style="blue")
+        extractor = Extractor.from_yaml_file(os.path.join(
+            os.path.dirname(__file__), 'selectors.yml'))
+        data_product = extractor.extract(page.text)
 
-    # Get only the first image, its a string dict so that it is necessary
-    # to use json.loads to get a dict, after that it takes the first image
-    data_product['images'] = next(iter(json.loads(data_product['images'])))
+        # Get only the first image, its a string dict so that it is necessary
+        # to use json.loads to get a dict, after that it takes the first image
+        console.print(f"Amazon metadata product: {data_product}", style="blue")
+        if data_product['images']:
+            data_product['images'] = next(iter(json.loads(data_product['images'])))
+        else:
+            data_product['images'] = "/static/img/no_image.jpeg"
 
-    return data_product
+        return data_product
+    except Exception as err:
+        console.print(
+            f"Error in scrap_by_selectorlib method:" +
+            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
+            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
+            f"\n{format(err)}", style="red bold")
 
 
 def scrap_by_beautifulsoup(page):
@@ -61,10 +73,18 @@ def scrap_by_beautifulsoup(page):
     Returns:
         dict: product data
     """
-    soup = BeautifulSoup(page.content, "html.parser")
-    print(soup.find(id="productTitle").text.strip())  # By DOM element id
-    # By DOM element class
-    return soup.find(class_="a-offscreen").text.strip()
+    try:
+        soup = BeautifulSoup(page.content, "html.parser")
+        print(soup.find(id="productTitle").text.strip())  # By DOM element id
+        # By DOM element class
+        return soup.find(class_="a-offscreen").text.strip()
+        # ...continue
+    except Exception as err:
+        console.print(
+            f"Error in scrap_by_beautifulsoup method:" +
+            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
+            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
+            f"\n{format(err)}", style="red bold")
 
 
 def scrap_web(url):
@@ -75,8 +95,7 @@ def scrap_web(url):
         url (str): url web to scrap
     """
     try:
-        url = "https://www.amazon.es/gp/product/B09JR6YL4B"
-
+        console.print(f"Method scrap_web to scrap the url: {url}", style="blue")
         page = requests.get(url, headers=headers)
         if page.status_code > 500:
             if "To discuss automated access to Amazon data please contact" in page.text:
