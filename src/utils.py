@@ -1,9 +1,11 @@
 # by Richi Rod AKA @richionline / falken20
 import sys
 import os
+import re
 from click import style
 import requests
 import json
+from lxml.html import fromstring
 
 from rich.console import Console
 from selectorlib import Extractor
@@ -30,6 +32,40 @@ headers = {
 }
 
 
+def get_proxies():
+    """
+    Get list proxies to access amazon web and avoid blocked access
+
+    Returns:
+        set: List of free proxies
+    """
+    try:
+        console.print(
+            f"Method get_proxies to get free proxies...", style="blue")
+
+        url = 'https://free-proxy-list.net/'
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Cafari/537.36'}
+
+        source = str(requests.get(url, headers=headers, timeout=10).text)
+        data = [list(filter(None, i))[0] for i in re.findall(
+            '<td class="hm">(.*?)</td>|<td>(.*?)</td>', source)]
+
+        groupings = [dict(zip(['ip', 'port', 'code', 'using_anonymous'], data[i:i+4]))
+                     for i in range(0, len(data), 4)]
+
+        # proxies = [{'full_ip':"{ip}:{port}".format(**i)} for i in groupings]
+        proxies = ["{ip}:{port}".format(**i) for i in groupings]
+
+        return proxies
+    except Exception as err:
+        console.print(
+            f"Error in get_proxies method:" +
+            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
+            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
+            f"\n{format(err)}", style="red bold")
+
+
 def scrap_by_selectorlib(page):
     """
     Scrap web using selectorlib library
@@ -41,7 +77,8 @@ def scrap_by_selectorlib(page):
         dict: product data
     """
     try:
-        console.print(f"Method scrap_by_selectorlib to scrap the Amazon page...", style="blue")
+        console.print(
+            f"Method scrap_by_selectorlib to scrap the Amazon page...", style="blue")
         extractor = Extractor.from_yaml_file(os.path.join(
             os.path.dirname(__file__), 'selectors.yml'))
         data_product = extractor.extract(page.text)
@@ -50,7 +87,8 @@ def scrap_by_selectorlib(page):
         # to use json.loads to get a dict, after that it takes the first image
         console.print(f"Amazon metadata product: {data_product}", style="blue")
         if data_product['images']:
-            data_product['images'] = next(iter(json.loads(data_product['images'])))
+            data_product['images'] = next(
+                iter(json.loads(data_product['images'])))
         else:
             data_product['images'] = "/static/img/no_image.jpeg"
 
@@ -74,11 +112,20 @@ def scrap_by_beautifulsoup(page):
         dict: product data
     """
     try:
+        console.print(
+            f"Method scrap_by_beautifulsoup to scrap the Amazon page...", style="blue")
         soup = BeautifulSoup(page.content, "html.parser")
+
         print(soup.find(id="productTitle").text.strip())  # By DOM element id
         # By DOM element class
-        return soup.find(class_="a-offscreen").text.strip()
+        print(soup.find(class_="a-offscreen").text.strip())
+        print(soup.find(class_="a-icon-alt").text.strip())
+        print(soup.find(id="acrCustomerReviewText"))
+        print(soup.find(class_="a-dynamic-image"))
+
+        return True
         # ...continue
+
     except Exception as err:
         console.print(
             f"Error in scrap_by_beautifulsoup method:" +
@@ -95,22 +142,31 @@ def scrap_web(url):
         url (str): url web to scrap
     """
     try:
-        console.print(f"Method scrap_web to scrap the url: {url}", style="blue")
-        page = requests.get(url, headers=headers)
-        if page.status_code > 500:
-            if "To discuss automated access to Amazon data please contact" in page.text:
-                console.print(
-                    "Page %s was blocked by Amazon. Please try using better proxies\n" % url, style="bold red")
-            else:
-                console. print("Page %s must have been blocked by Amazon as the status code was %d" % (
-                    url, page.status_code), style="bold red")
-                return None
+        console.print(
+            f"Method scrap_web to scrap the url: {url}", style="blue")
 
-        # scrap_by_beautifulsoup(page)
+        proxies = get_proxies()
+        if proxies:
+            page = requests.get(url, headers=headers, proxies={
+                                "http": proxies[0], "https": proxies[0]})
+        else:
+            page = requests.get(url, headers=headers)            
+
+        if page.status_code > 500:
+            console. print("Page %s must have been blocked by Amazon as the status code was %d" % (
+                    url, page.status_code), style="bold red")
+            return None
+        else:
+            if "To discuss automated access to Amazon data please contact api-services-support@amazon.com" in page.text:
+                raise Exception(
+                    "Page was blocked by Amazon. Please try using better proxies or try later")
+
+        console.print(f"Status code page: {page.status_code}", style="blue")
         data_product = scrap_by_selectorlib(page)
+        scrap_by_beautifulsoup(page)
 
         console.print(
-            "[bold green]Process scrap_web finished succesfully[/bold green]")
+            "[bold green]Process scrap_web finished[/bold green]")
 
         return data_product
 

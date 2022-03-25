@@ -10,9 +10,6 @@ rating:
 reviews:
     css: '#acrCustomerReviewText' # 'a.a-link-normal h2'
     type: Text
-sales_rank:
-    css: 'li#SalesRank'
-    type: Text
 images:
     css: '.imgTagWrapper img'
     type: Attribute

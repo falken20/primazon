@@ -9,7 +9,7 @@ from numpy import product
 import psycopg2
 from rich.console import Console
 
-from .  import products
+from . import products
 from . import utils
 
 
@@ -107,10 +107,46 @@ def update_product():
             f"\n{format(err)}", style="red bold")
 
 
+def update_product_from_amazon(product, amazon_data):
+    """
+    Update data product from amazon data
+
+    Args:
+        product (list): Current data product
+        amazon_data (dict): Data product from Amazon
+
+    Returns:
+        product_to_update: Object product to update
+    """
+    try:
+        product_to_update = dict()
+        product_to_update['product_id'] = product[0]
+        product_to_update['product_url'] = product[1]
+        product_to_update['product_desc'] = amazon_data['name'][0:150]
+        product_to_update['product_url_photo'] = amazon_data['images']
+
+        float_price = float(amazon_data['price'].replace(
+            '.', '').replace(',', '.').replace('€', ''))
+        print(float_price)
+        product_to_update['product_price'] = float_price if float_price else 0
+        product_to_update['product_rating'] = amazon_data['rating']
+        product_to_update['product_reviews'] = amazon_data['reviews']
+
+        return product_to_update
+
+    except Exception as err:
+        console.print(
+            f"Error in update_product_from_amazon method:" +
+            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
+            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
+            f"\n{format(err)}", style="red bold")
+
+
 @app.route('/product/refresh/<int:product_id>')
 def refresh_data(product_id):
     try:
-        console.print(f"Method to [bold]refresh data product[/bold] with id: {product_id}", style="blue")
+        console.print(
+            f"Method to [bold]refresh data product[/bold] with id: {product_id}", style="blue")
 
         product = products.get_product(product_id)[0]
         product_url = product[1]
@@ -118,24 +154,18 @@ def refresh_data(product_id):
         console.print(f"Amazon url to check: {product_url}", style="blue")
 
         amazon_data = utils.scrap_web(product_url)
-        console.print(f"Getting [bold]Amazon[/bold] data: {amazon_data}", style="blue")
+        console.print(
+            f"Getting [bold]Amazon[/bold] data: {amazon_data}", style="blue")
 
         if amazon_data is None:
-            console.print(f"Impossible to get data from Amazon for the product url '{product_url}'", style="red bold")
+            console.print(
+                f"Impossible to get data from Amazon for the product url '{product_url}'", style="red bold")
         else:
-            product_to_update = dict()
-            product_to_update['product_id'] = product_id
-            product_to_update['product_url'] = product_url
-            product_to_update['product_desc'] = amazon_data['name'][0:150]
-            product_to_update['product_url_photo'] = amazon_data['images']
-
-            float_price = float(amazon_data['price'].replace('.', '').replace(',', '.').replace('€',''))
-            print(float_price)
-            product_to_update['product_price'] = float_price if float_price else 0
-            product_to_update['product_rating'] = amazon_data['rating']
-            product_to_update['product_reviews'] = amazon_data['reviews']
-
+            product_to_update = update_product_from_amazon(
+                product, amazon_data)
             products.update_product(product_to_update)
+            console.print(
+                f"Product with id {product[0]} succesfully updated", style="blue")
 
         return redirect(url_for('index'))
         # return redirect(url_for('edit_product', product_id=product_id))
@@ -147,37 +177,33 @@ def refresh_data(product_id):
             f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
             f"\n{format(err)}", style="red bold")
 
+
 @app.route('/run_process')
 def run_process():
     try:
-        console.print(f"Process to [bold]refresh [bold]ALL[/bold] data product[/bold]", style="blue")
+        console.print(
+            f"Process to [bold]refresh [bold]ALL[/bold] data product[/bold]", style="blue")
 
         all_products = products.get_all_products()
 
         for product in all_products:
             product_url = product[1]
             amazon_data = utils.scrap_web(product_url)
-            console.print(f"Getting [bold]Amazon[/bold] data: {amazon_data}", style="blue")
+            console.print(
+                f"Getting [bold]Amazon[/bold] data: {amazon_data}", style="blue")
 
             if amazon_data is None:
-                console.print(f"Impossible to get data from Amazon for the product url '{product_url}'", style="red bold")
+                console.print(
+                    f"Impossible to get data from Amazon for the product url '{product_url}'", style="red bold")
             else:
-                product_to_update = dict()
-                product_to_update['product_id'] = product[0]
-                product_to_update['product_url'] = product_url
-                product_to_update['product_desc'] = amazon_data['name'][0:150]
-                product_to_update['product_url_photo'] = amazon_data['images']
-
-                float_price = float(amazon_data['price'].replace('.', '').replace(',', '.').replace('€',''))
-                print(float_price)
-                product_to_update['product_price'] = float_price if float_price else 0
-                product_to_update['product_rating'] = amazon_data['rating']
-                product_to_update['product_reviews'] = amazon_data['reviews']
-
+                product_to_update = update_product_from_amazon(
+                    product, amazon_data)
                 products.update_product(product_to_update)
-                console.print(f"Product with id {product[0]} succesfully updated", style="blue")
+                console.print(
+                    f"Product with id {product[0]} succesfully updated", style="blue")
 
-        console.print(f"Process to [bold]refresh [bold]ALL[/bold] data product[/bold] finished succesfully", style="blue")
+        console.print(
+            f"Process to [bold]refresh [bold]ALL[/bold] data product[/bold] finished succesfully", style="blue")
 
         return redirect(url_for('index'))
 
