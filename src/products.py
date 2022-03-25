@@ -19,7 +19,7 @@ def get_all_products():
     Returns:
         list[Tuple]: Rows from products database
     """
-    sql = 'SELECT * FROM t_products ORDER BY product_id;'
+    sql = 'SELECT * FROM t_products ORDER BY product_date_updated DESC, product_id;'
     products = utils_db.exec_sql_statement(sql)
 
     return products
