@@ -120,14 +120,18 @@ def update_product_from_amazon(product, amazon_data):
     """
     try:
         product_to_update = dict()
-        product_to_update['product_id'] = product[0]
-        product_to_update['product_url'] = product[1]
+        product_to_update['product_id'] = product[products.IDX_PRODUCT_ID]
+        product_to_update['product_url'] = product[products.IDX_PRODUCT_URL]
         product_to_update['product_desc'] = amazon_data['name'][0:150]
         product_to_update['product_url_photo'] = amazon_data['images']
 
         float_price = float(amazon_data['price'].replace(
             '.', '').replace(',', '.').replace('€', ''))
-        print(float_price)
+        # Update min and max price
+        if float_price > product[]:
+            pass
+        else:
+            pass
         product_to_update['product_price'] = float_price if float_price else 0
         product_to_update['product_rating'] = amazon_data['rating']
         product_to_update['product_reviews'] = amazon_data['reviews']
@@ -149,7 +153,7 @@ def refresh_data(product_id):
             f"Method to [bold]refresh data product[/bold] with id: {product_id}", style="blue")
 
         product = products.get_product(product_id)[0]
-        product_url = product[1]
+        product_url = product[products.IDX_PRODUCT_URL]
         console.print(f"Product to check: {product}", style="blue")
         console.print(f"Amazon url to check: {product_url}", style="blue")
 
@@ -165,7 +169,7 @@ def refresh_data(product_id):
                 product, amazon_data)
             products.update_product(product_to_update)
             console.print(
-                f"Product with id {product[0]} succesfully updated", style="blue")
+                f"Product with id {product[products.IDX_PRODUCT_ID]} succesfully updated", style="blue")
 
         return redirect(url_for('index'))
         # return redirect(url_for('edit_product', product_id=product_id))
@@ -187,14 +191,13 @@ def run_process():
         all_products = products.get_all_products()
 
         for product in all_products:
-            product_url = product[1]
-            amazon_data = utils.scrap_web(product_url)
+            amazon_data = utils.scrap_web(product[products.IDX_PRODUCT_URL])
             console.print(
                 f"Getting [bold]Amazon[/bold] data: {amazon_data}", style="blue")
 
             if amazon_data is None:
                 console.print(
-                    f"Impossible to get data from Amazon for the product url '{product_url}'", style="red bold")
+                    f"Impossible to get data from Amazon for the product url '{product[products.IDX_PRODUCT_URL]}'", style="red bold")
             else:
                 product_to_update = update_product_from_amazon(
                     product, amazon_data)
