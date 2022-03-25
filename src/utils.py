@@ -145,7 +145,8 @@ def scrap_web(url):
         console.print(
             f"Method scrap_web to scrap the url: {url}", style="blue")
 
-        proxies = get_proxies()
+        # proxies = get_proxies()
+        proxies = None
         if proxies:
             page = requests.get(url, headers=headers, proxies={
                                 "http": proxies[0], "https": proxies[0]})
