@@ -127,12 +127,17 @@ def update_product_from_amazon(product, amazon_data):
 
         float_price = float(amazon_data['price'].replace(
             '.', '').replace(',', '.').replace('€', ''))
-        # Update min and max price
-        if float_price > product[]:
-            pass
+
+        if float_price > 0:
+            product_to_update['product_price'] = float_price
+            # Update min and max price
+            if float_price > product[products.IDX_PRODUCT_MAX_PRICE]:
+                product_to_update['product_max_price'] = float_price
+            if float_price < product[products.IDX_PRODUCT_MIN_PRICE]:
+                product_to_update['product_min_price'] = float_price
         else:
-            pass
-        product_to_update['product_price'] = float_price if float_price else 0
+            product_to_update['product_price'] = product[products.IDX_PRODUCT_PRICE]
+
         product_to_update['product_rating'] = amazon_data['rating']
         product_to_update['product_reviews'] = amazon_data['reviews']
 
