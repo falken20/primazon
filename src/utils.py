@@ -145,17 +145,20 @@ def scrap_web(url):
         console.print(
             f"Method scrap_web to scrap the url: {url}", style="blue")
 
-        # proxies = get_proxies()
-        proxies = None
+        print(os.environ['PROXY'])
+        proxies = get_proxies() if os.environ['PROXY'] in ["Y", "y"] else None
         if proxies:
+            console.print(
+                f"Use proxy to access to Amazon: {proxies[0]}", style="blue")
             page = requests.get(url, headers=headers, proxies={
                                 "http": proxies[0], "https": proxies[0]})
         else:
-            page = requests.get(url, headers=headers)            
+            console.print(f"Don't use proxy to access to Amazon", style="blue")
+            page = requests.get(url, headers=headers)
 
         if page.status_code > 500:
             console. print("Page %s must have been blocked by Amazon as the status code was %d" % (
-                    url, page.status_code), style="bold red")
+                url, page.status_code), style="bold red")
             return None
         else:
             if "To discuss automated access to Amazon data please contact api-services-support@amazon.com" in page.text:
