@@ -5,9 +5,12 @@ name = "pypi"
 
 [packages]
 rich = "==11.2.0"
-python-dotenv = "*"
+python-dotenv = ">=0.19.2"
 Flask = ">=2.0.3"
-psycopg2 = "*"
+psycopg2 = ">=2.9.3"
+requests = "*"
+selectorlib = ">=0.16.0"
+beautifulsoup4 = "*"
 
 [dev-packages]
 coverage = "*"
