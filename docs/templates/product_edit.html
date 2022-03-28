@@ -7,27 +7,48 @@
 
       {% for prod in product %}
       <div class="form-group">
-        <input class="form-control" type="hidden" name="product_id" value={{ prod[0] }} >
+        <input class="form-control" type="hidden" name="product_id" value="{{ prod[0] }}" >
       </div>
       <div class="form-group">
         <label for="product_url">Product URL</label>
-        <input type="text" class="form-control" id="product_url" name="product_url" placeholder="Product URL" value={{ prod[1] }}>
+        <input type="text" class="form-control" id="product_url" name="product_url" placeholder="Product URL" value="{{ prod[1] }}">
       </div>      
       <div class="form-group">
+        <a class="btn btn-warning btn-sm">
+          <i class="bi bi-arrow-clockwise"></i>
+          Refresh data from <img src="/static/img/amazon.jpeg" height="20" /> 
+        </a>
+      </div>
+      <div class="form-group">
         <label for="product_desc">Description</label>
-        <input type="text" class="form-control" id="product_desc" name="product_desc" placeholder="Description" value={{ prod[2] }}>
+        <input type="text" class="form-control" id="product_desc" name="product_desc" placeholder="Description" value="{{ prod[2] }}">
       </div>
       <div class="form-group">
         <label for="product_url_photo">Photo URL</label>
-        <input type="text" class="form-control" id="product_url_photo" name="product_url_photo" placeholder="Photo URL" value={{ prod[3] }}>
+        <input type="text" class="form-control" id="product_url_photo" name="product_url_photo" placeholder="Photo URL" value="{{ prod[3] }}">
       </div>
-      <div class="form-group col-md-2">
-        <div class="row">
+      <div class="row">
+        <div class="form-group col-md-2">
           <label for="product_price">Price</label>
-          <div class="input-group mb-3">
-          <input type="number" class="form-control" name="product_price" id="product_price" placeholder="0" step="0.10" value={{ prod[4] }}>
-          <span class="input-group-text">€</span>
-          </div>
+          <input type="number" class="form-control" name="product_price" id="product_price" placeholder="0" step="0.10" value="{{ prod[4] }}">
+        </div>
+        <div class="form-group col-md-2">
+          <label for="product_min_price">Min</label>
+          <input type="text" class="form-control" id="product_min_price" name="product_min_price" value="{{ prod[7] }}" readonly>
+        </div>
+        <div class="form-group col-md-2">
+          <label for="product_max_price">Max</label>
+          <input type="text" class="form-control" id="product_max_price" name="product_max_price" value="{{ prod[8] }}" readonly>
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group col-md-6">
+          <label for="product_rating">Rating</label>
+          <input type="text" class="form-control" id="product_rating" name="product_rating" value="{{ prod[5] }}" readonly>
+        </div>
+        <div class="form-group col-md-6">
+          <label for="product_reviews">Reviews</label>
+          <input type="text" class="form-control" id="product_reviews" name="product_reviews" value="{{ prod[6] }}" readonly>
         </div>
       </div>
       {% endfor %}
