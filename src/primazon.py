@@ -1,13 +1,10 @@
 # by Richi Rod AKA @richionline / falken20
 
 from crypt import methods
-import os
 from src import prices
 import sys
 from click import style
 from flask import Flask, render_template, url_for, request, redirect
-from numpy import product
-import psycopg2
 from rich.console import Console
 
 from . import products
