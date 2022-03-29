@@ -2,6 +2,7 @@
 
 from crypt import methods
 import os
+from src import prices
 import sys
 from click import style
 from flask import Flask, render_template, url_for, request, redirect
@@ -140,6 +141,10 @@ def update_product_from_amazon(product, amazon_data):
                 product_to_update['product_min_price'] = float_price
             else:
                 product_to_update['product_min_price'] = product[products.IDX_PRODUCT_MIN_PRICE]
+
+            # When the price changes insert the price in prices table
+            if  product_to_update['product_price'] != product[products.IDX_PRODUCT_PRICE]:
+                prices.insert_product_price(product_to_update['product_id'], product_to_update['product_price'])
 
         else:
             product_to_update['product_price'] = product[products.IDX_PRODUCT_PRICE]
