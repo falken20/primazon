@@ -145,7 +145,6 @@ def scrap_web(url):
         console.print(
             f"Method scrap_web to scrap the url: {url}", style="blue")
 
-        print(os.environ['PROXY'])
         proxies = get_proxies() if os.environ['PROXY'] in ["Y", "y"] else None
         if proxies:
             console.print(
