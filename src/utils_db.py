@@ -106,7 +106,7 @@ def create_table_prices(cur):
                     '(price_id serial PRIMARY KEY,'
                     'product_id serial,'
                     'product_price float NOT NULL,'
-                    'product_date_added date DEFAULT CURRENT_TIMESTAMP,'
+                    'price_date_added date DEFAULT CURRENT_TIMESTAMP,'
                     'CONSTRAINT fk_products'
                     '   FOREIGN KEY(product_id)'
                     '   REFERENCES t_products(product_id))'
