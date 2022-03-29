@@ -1,3 +1,3 @@
 # Heroku config file
-web: gunicorn ./src/primazon.py:app
+web: gunicorn wsgi:app
 # cron-weather: python utils/cron_dataweather.py
