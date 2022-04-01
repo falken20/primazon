@@ -1,0 +1,17 @@
+name:
+    css: '#productTitle'
+    type: Text
+price:
+    css: '.a-offscreen' # '#price_inside_buybox'
+    type: Text
+rating:
+    css: '.a-icon-alt' # 'span.arp-rating-out-of-text'
+    type: Text
+reviews:
+    css: '#acrCustomerReviewText' # 'a.a-link-normal h2'
+    type: Text
+images:
+    css: '.imgTagWrapper img'
+    type: Attribute
+    attribute: data-a-dynamic-image
+

@@ -29,7 +29,7 @@ def get_db_connection():
     """
     try:
         return psycopg2.connect(
-            host="localhost",
+            host=os.environ['DATABASE_URL'],
             database=os.environ['DB_DATABASE'],
             user=os.environ['DB_USERNAME'],
             password=os.environ['DB_PASSWORD'])
@@ -78,6 +78,8 @@ def create_table_products(cur):
                     'product_desc varchar (150) NOT NULL,'
                     'product_url_photo varchar (500) NOT NULL,'
                     'product_price float,'
+                    'product_rating varchar(50),'
+                    'product_reviews varchar(100),'
                     'product_min_price float,'
                     'product_max_price float,'
                     'product_date_added date DEFAULT CURRENT_TIMESTAMP,'
@@ -104,7 +106,7 @@ def create_table_prices(cur):
                     '(price_id serial PRIMARY KEY,'
                     'product_id serial,'
                     'product_price float NOT NULL,'
-                    'product_date_added date DEFAULT CURRENT_TIMESTAMP,'
+                    'price_date_added date DEFAULT CURRENT_TIMESTAMP,'
                     'CONSTRAINT fk_products'
                     '   FOREIGN KEY(product_id)'
                     '   REFERENCES t_products(product_id))'
