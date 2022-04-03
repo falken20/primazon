@@ -16,6 +16,7 @@ app = Flask(__name__, template_folder='../docs/templates',
 # Set this var to True to be able to make any web change and take the changes with refresh
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
+
 # Create console object for logs
 console = Console()
 
@@ -140,8 +141,9 @@ def update_product_from_amazon(product, amazon_data):
                 product_to_update['product_min_price'] = product[products.IDX_PRODUCT_MIN_PRICE]
 
             # When the price changes insert the price in prices table
-            if  product_to_update['product_price'] != product[products.IDX_PRODUCT_PRICE]:
-                prices.insert_product_price(product_to_update['product_id'], product_to_update['product_price'])
+            if product_to_update['product_price'] != product[products.IDX_PRODUCT_PRICE]:
+                prices.insert_product_price(
+                    product_to_update['product_id'], product_to_update['product_price'])
 
         else:
             product_to_update['product_price'] = product[products.IDX_PRODUCT_PRICE]
