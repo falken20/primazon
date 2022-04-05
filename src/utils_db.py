@@ -29,7 +29,8 @@ def get_db_connection():
     """
     try:
         return psycopg2.connect(
-            host=os.environ['DATABASE_URL'],
+            host=os.environ['DB_HOST'],
+            port=os.environ['DB_PORT'],
             database=os.environ['DB_DATABASE'],
             user=os.environ['DB_USERNAME'],
             password=os.environ['DB_PASSWORD'])
