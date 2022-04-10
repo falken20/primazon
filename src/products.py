@@ -2,7 +2,6 @@
 
 import sys
 import datetime
-from rich import console
 from rich.console import Console
 
 from . import utils_db
@@ -31,10 +30,18 @@ def get_all_products():
     Returns:
         list[Tuple]: Rows from products database
     """
-    sql = 'SELECT * FROM t_products ORDER BY product_date_updated DESC, product_id;'
-    products = utils_db.exec_sql_statement(sql)
+    try:
+        sql = 'SELECT * FROM t_products ORDER BY product_date_updated DESC, product_id;'
+        products = utils_db.exec_sql_statement(sql)
 
-    return products
+        return products
+    except Exception as err:
+        console.print(
+            "Error in method get_all_products:" +
+            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
+            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
+            f"\n{format(err)}", style="red bold")
+        return False
 
 
 def get_product(product_id):
@@ -47,10 +54,18 @@ def get_product(product_id):
     Returns:
         list[Tuple]: Fields from the product searched
     """
-    sql = f'SELECT * FROM t_products WHERE product_id = {product_id};'
-    product = utils_db.exec_sql_statement(sql)
+    try:
+        sql = f'SELECT * FROM t_products WHERE product_id = {product_id};'
+        product = utils_db.exec_sql_statement(sql)
 
-    return product
+        return product
+    except Exception as err:
+        console.print(
+            "Error in method get_product:" +
+            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
+            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
+            f"\n{format(err)}", style="red bold")
+        return False
 
 
 def create_product(values):
@@ -72,8 +87,8 @@ def create_product(values):
         product_rating = values.get('product_rating')
         product_reviews = values.get('product_reviews')
 
-        sql = f"INSERT INTO t_products (product_url, product_desc, product_url_photo, product_price, product_rating, "
-        sql += f" product_reviews, product_min_price, product_max_price)"
+        sql = "INSERT INTO t_products (product_url, product_desc, product_url_photo, product_price, product_rating, "
+        sql += " product_reviews, product_min_price, product_max_price)"
         sql += f" VALUES ('{product_url}', '{product_desc}', '{product_url_photo}', {product_price}, '{product_rating}',"
         sql += f" '{product_reviews}', {product_price}, {product_price})"
 
@@ -82,7 +97,7 @@ def create_product(values):
         return True
     except Exception as err:
         console.print(
-            f"Error in method create_product:" +
+            "Error in method create_product:" +
             f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
             f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
             f"\n{format(err)}", style="red bold")
@@ -107,7 +122,7 @@ def delete_product(product_id):
 
     except Exception as err:
         console.print(
-            f"Error in method delete_product:" +
+            "Error in method delete_product:" +
             f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
             f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
             f"\n{format(err)}", style="red bold")
@@ -138,7 +153,7 @@ def update_product(values):
         product_max_price = values.get(
             'product_max_price') if values.get('product_max_price') else 0
 
-        sql = f"UPDATE t_products"
+        sql = "UPDATE t_products"
         sql += f" SET product_url = '{product_url}', product_desc = '{product_desc}', "
         sql += f" product_url_photo = '{product_url_photo}', product_price = {product_price},"
         sql += f" product_rating = '{product_rating}', product_reviews = '{product_reviews}',"
@@ -151,7 +166,7 @@ def update_product(values):
         return True
     except Exception as err:
         console.print(
-            f"Error in method create_product:" +
+            "Error in method create_product:" +
             f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
             f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
             f"\n{format(err)}", style="red bold")

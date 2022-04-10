@@ -1,13 +1,13 @@
 # by Richi Rod AKA @richionline / falken20
 
-from crypt import methods
-from src import prices
 import sys
-from click import style
+import os
 from flask import Flask, render_template, url_for, request, redirect
 from rich.console import Console
+from flask_sqlalchemy import SQLAlchemy
 
 from . import products
+from . import prices
 from . import utils
 
 
@@ -15,6 +15,12 @@ app = Flask(__name__, template_folder='../docs/templates',
             static_folder='../docs/static')
 # Set this var to True to be able to make any web change and take the changes with refresh
 app.config['TEMPLATES_AUTO_RELOAD'] = True
+
+# Set the database params for SQLAlchemy ORM library
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+
+db = SQLAlchemy(app)
 
 
 # Create console object for logs
@@ -49,7 +55,7 @@ def create_product():
 
     except Exception as err:
         console.print(
-            f"Error showing create product page:" +
+            "Error showing create product page:" +
             f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
             f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
             f"\n{format(err)}", style="red bold")
@@ -66,7 +72,7 @@ def delete_product(product_id):
 
     except Exception as err:
         console.print(
-            f"Error in delete_product method:" +
+            "Error in delete_product method:" +
             f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
             f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
             f"\n{format(err)}", style="red bold")
@@ -83,7 +89,7 @@ def edit_product(product_id):
 
     except Exception as err:
         console.print(
-            f"Error in edit_product method:" +
+            "Error in edit_product method:" +
             f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
             f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
             f"\n{format(err)}", style="red bold")
@@ -100,7 +106,7 @@ def update_product():
 
     except Exception as err:
         console.print(
-            f"Error in edit_product method:" +
+            "Error in edit_product method:" +
             f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
             f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
             f"\n{format(err)}", style="red bold")
@@ -157,7 +163,7 @@ def update_product_from_amazon(product, amazon_data):
 
     except Exception as err:
         console.print(
-            f"Error in update_product_from_amazon method:" +
+            "Error in update_product_from_amazon method:" +
             f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
             f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
             f"\n{format(err)}", style="red bold")
@@ -193,7 +199,7 @@ def refresh_data(product_id):
 
     except Exception as err:
         console.print(
-            f"Error in refresh_data method:" +
+            "Error in refresh_data method:" +
             f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
             f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
             f"\n{format(err)}", style="red bold")
@@ -203,7 +209,7 @@ def refresh_data(product_id):
 def run_process():
     try:
         console.print(
-            f"Process to [bold]refresh [bold]ALL[/bold] data product[/bold]", style="blue")
+            "Process to [bold]refresh [bold]ALL[/bold] data product[/bold]", style="blue")
 
         all_products = products.get_all_products()
 
@@ -214,7 +220,8 @@ def run_process():
 
             if amazon_data is None:
                 console.print(
-                    f"Impossible to get data from Amazon for the product url '{product[products.IDX_PRODUCT_URL]}'", style="red bold")
+                    f"Impossible to get data from Amazon for the product url '{product[products.IDX_PRODUCT_URL]}'",
+                    style="red bold")
             else:
                 product_to_update = update_product_from_amazon(
                     product, amazon_data)
@@ -223,13 +230,13 @@ def run_process():
                     f"Product with id {product[0]} succesfully updated", style="blue")
 
         console.print(
-            f"Process to [bold]refresh [bold]ALL[/bold] data product[/bold] finished succesfully", style="blue")
+            "Process to [bold]refresh [bold]ALL[/bold] data product[/bold] finished succesfully", style="blue")
 
         return redirect(url_for('index'))
 
     except Exception as err:
         console.print(
-            f"Error in run_process method:" +
+            "Error in run_process method:" +
             f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
             f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
             f"\n{format(err)}", style="red bold")
