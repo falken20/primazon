@@ -7,8 +7,6 @@
 
 import os
 import sys
-from unittest import result
-from itsdangerous import exc
 import psycopg2
 from dotenv import load_dotenv, find_dotenv
 from rich.console import Console
@@ -36,7 +34,7 @@ def get_db_connection():
             password=os.environ['DB_PASSWORD'])
     except Exception as err:
         console.print(
-            f"Error getting connection to DB:" +
+            "Error getting connection to DB:" +
             f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
             f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
             f"\n{format(err)}", style="red bold")
@@ -58,7 +56,7 @@ def drop_tables(cur):
         cur.execute('DROP TABLE IF EXISTS t_products;')
     except Exception as err:
         console.print(
-            f"Error dropping tables from DB:" +
+            "Error dropping tables from DB:" +
             f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
             f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
             f"\n{format(err)}", style="red bold")
@@ -88,7 +86,7 @@ def create_table_products(cur):
                     )
     except Exception as err:
         console.print(
-            f"Error creating t_products:" +
+            "Error creating t_products:" +
             f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
             f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
             f"\n{format(err)}", style="red bold")
@@ -114,7 +112,7 @@ def create_table_prices(cur):
                     )
     except Exception as err:
         console.print(
-            f"Error creating t_prices:" +
+            "Error creating t_prices:" +
             f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
             f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
             f"\n{format(err)}", style="red bold")
@@ -167,7 +165,7 @@ def exec_sql_statement(sql):
         return result
     except Exception as err:
         console.print(
-            f"Error executing sql statement:" +
+            "Error executing sql statement:" +
             f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
             f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
             f"\n{format(err)}", style="red bold")
@@ -206,7 +204,7 @@ def main():
 
     except Exception as err:
         console.print(
-            f"Execution Error:" +
+            "Execution Error:" +
             f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
             f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
             f"\n{format(err)}", style="red bold")
