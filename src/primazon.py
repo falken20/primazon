@@ -2,6 +2,7 @@
 
 import sys
 import os
+from click import style
 from flask import Flask, render_template, url_for, request, redirect
 from rich.console import Console
 from flask_sqlalchemy import SQLAlchemy
@@ -10,6 +11,8 @@ from . import products
 from . import prices
 from . import utils
 
+# Create console object for logs
+console = Console()
 
 app = Flask(__name__, template_folder='../docs/templates',
             static_folder='../docs/static')
@@ -19,15 +22,14 @@ app.config['TEMPLATES_AUTO_RELOAD'] = True
 # Set the database params for SQLAlchemy ORM library
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+# Secret key for creating session coockie. It has to be different for each user
+app.secret_key = os.urandom(24)
 
 db = SQLAlchemy(app)
 
 
-# Create console object for logs
-console = Console()
-
-
 @app.route('/')
+@app.route('/home')
 def index():
     console.print("Method to show [bold]index[/bold] page...", style="blue")
     # Get all the products
