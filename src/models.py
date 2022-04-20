@@ -5,6 +5,7 @@
 
 import datetime
 from rich.console import Console
+from sqlalchemy import engine
 
 from .primazon import db
 
@@ -28,8 +29,6 @@ class Product(db.Model):
     product_date_added = db.Column(db.Date, default=datetime.date.today)
     product_date_update = db.Column(db.Date)
 
-    # prices = db.relationship('Price', backref='product', lazy=True)
-
     def __repr__(self) -> str:
         return f"Product: {self.product_desc}"
 
@@ -48,7 +47,7 @@ class Price(db.Model):
     )
 
     product = db.relationship(
-        'Product', backref=db.backref('prices', lazy=True))
+        'Product', backref=db.backref('prices', order_by=price_id), lazy=True)
 
     def __repr__(self) -> str:
         return f"Product price: {self.product_id} - {self.product_price}"
@@ -58,6 +57,10 @@ def init_db():
     console.print("Creating Database if doesn't exist", style="blue")
     db.create_all()
     db.session.commit()
+
+    from sqlalchemy.ext.declarative import declarative_base
+    Base = declarative_base()
+    Base.metadata.create_all(bind=engine)
 
 
 if __name__ == '__main__':
