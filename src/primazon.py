@@ -242,3 +242,4 @@ def run_process():
             f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
             f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
             f"\n{format(err)}", style="red bold")
+
