@@ -4,13 +4,17 @@
 # With this file it is no neccesary to use prices.py and products.py
 
 import datetime
+import sys
 from rich.console import Console
 from sqlalchemy.sql import func
+from flask_sqlalchemy import SQLAlchemy
 
-from src.primazon import db
 
 # Create console object for logs
 console = Console()
+
+# Create db object
+db = SQLAlchemy()
 
 
 class Product(db.Model):
@@ -69,7 +73,7 @@ def init_db():
         if input("Could you create the tables(y/n)? ") in ["Y", "y"]:
             console.print("Creating tables...", style="blue")
             db.create_all()
-            
+
         db.session.commit()
 
         console.print("Process finished succesfully", style="bold green")

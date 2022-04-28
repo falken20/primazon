@@ -5,6 +5,7 @@ import datetime
 from rich.console import Console
 
 from . import utils_db
+from src.models import Product, Price, db
 
 IDX_PRODUCT_ID = 0
 IDX_PRODUCT_URL = 1
@@ -31,8 +32,9 @@ def get_all_products():
         list[Tuple]: Rows from products database
     """
     try:
-        sql = 'SELECT * FROM t_products ORDER BY product_date_updated DESC, product_id;'
-        products = utils_db.exec_sql_statement(sql)
+        #sql = 'SELECT * FROM t_products ORDER BY product_date_updated DESC, product_id;'
+        #products = utils_db.exec_sql_statement(sql)
+        products = db.session.query(Product)
 
         return products
     except Exception as err:
