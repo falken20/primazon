@@ -25,8 +25,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 # Secret key for creating session coockie. It has to be different for each user
 app.secret_key = os.urandom(24)
 
-db = SQLAlchemy(app)
-
 
 @app.route('/')
 @app.route('/home')
@@ -242,4 +240,3 @@ def run_process():
             f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
             f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
             f"\n{format(err)}", style="red bold")
-

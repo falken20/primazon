@@ -1,5 +1,7 @@
 # by Richi Rod AKA @richionline / falken20
 
+# Functions for use the database without a ORM library
+
 # Create user and grant privileges, it should be done before in the terminal, important the ';' at the end
 # CREATE ROLE user LOGIN PASSWORD password;
 # GRANT ALL PRIVILEGES ON DATABASE db TO user;
