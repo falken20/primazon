@@ -10,6 +10,7 @@ from flask_sqlalchemy import SQLAlchemy
 from . import products
 from . import prices
 from . import utils
+from src.models import db
 
 # Create console object for logs
 console = Console()
@@ -24,6 +25,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 # Secret key for creating session coockie. It has to be different for each user
 app.secret_key = os.urandom(24)
+
+db.init_app(app)
 
 
 @app.route('/')
