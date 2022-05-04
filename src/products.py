@@ -34,7 +34,10 @@ def get_all_products():
     try:
         #sql = 'SELECT * FROM t_products ORDER BY product_date_updated DESC, product_id;'
         #products = utils_db.exec_sql_statement(sql)
-        products = db.session.query(Product)
+        products = db.session.query(Product).filter()
+        console.print(f"ROD --> {products}", style="bold")
+        products = Product.query.all()
+        console.print(f"ROD --> {products}", style="bold")
 
         return products
     except Exception as err:
