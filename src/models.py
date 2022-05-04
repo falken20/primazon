@@ -36,7 +36,7 @@ class Product(db.Model):
     product_prices = db.relationship('Price')
 
     def __repr__(self) -> str:
-        return f"Product: {self.product_desc}"
+        return f"Product: {self.product_desc} / URL: {self.product_url}"
 
 
 class Price(db.Model):
