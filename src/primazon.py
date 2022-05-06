@@ -10,7 +10,7 @@ from flask_sqlalchemy import SQLAlchemy
 from . import products
 from . import prices
 from . import utils
-from src.models import db
+from src.models import Product, db
 
 # Create console object for logs
 console = Console()
@@ -86,7 +86,9 @@ def edit_product(product_id):
     try:
         console.print(
             "Method to [bold]edit product[/bold] with id: {product_id}", style="blue")
-        product = products.get_product(product_id)
+        #product = products.get_product(product_id)
+        product = Product.get_by_id(product_id)
+        console.print(f"{product}", style="blue bold")
 
         return render_template('product_edit.html', product=product)
 
