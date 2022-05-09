@@ -34,7 +34,8 @@ db.init_app(app)
 def index():
     console.print("Method to show [bold]index[/bold] page...", style="blue")
     # Get all the products
-    all_products = products.get_all_products()
+    # all_products = products.get_all_products()
+    all_products = Product.get_all_products()
 
     return render_template('product_list.html', products=all_products)
 
@@ -68,8 +69,9 @@ def create_product():
 def delete_product(product_id):
     try:
         console.print(
-            "Method to [bold]delete product[/bold] with id: {product_id}", style="blue")
-        products.delete_product(product_id)
+            f"Method to [bold]delete product[/bold] with id: {product_id}", style="blue")
+        # products.delete_product(product_id)
+        Product.delete_product(product_id)
 
         return redirect(url_for('index'))
 
@@ -85,10 +87,9 @@ def delete_product(product_id):
 def edit_product(product_id):
     try:
         console.print(
-            "Method to [bold]edit product[/bold] with id: {product_id}", style="blue")
+            f"Method to [bold]edit product[/bold] with id: {product_id}", style="blue")
         #product = products.get_product(product_id)
         product = Product.get_by_id(product_id)
-        console.print(f"{product}", style="blue bold")
 
         return render_template('product_edit.html', product=product)
 

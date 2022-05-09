@@ -7,7 +7,6 @@
 
     <form method="POST" action="{{ url_for('update_product') }}">
 
-      <!--{% for prod in product %}-->
       <div class="form-group">
         <input class="form-control" type="hidden" name="product_id" value="{{ product.product_id }}" >
       </div>
@@ -23,37 +22,36 @@
       </div>
       <div class="form-group">
         <label for="product_desc">Description</label>
-        <input type="text" class="form-control" id="product_desc" name="product_desc" placeholder="Description" value="{{ prod[2] }}">
+        <input type="text" class="form-control" id="product_desc" name="product_desc" placeholder="Description" value="{{ product.product_desc }}">
       </div>
       <div class="form-group">
         <label for="product_url_photo">Photo URL</label>
-        <input type="text" class="form-control" id="product_url_photo" name="product_url_photo" placeholder="Photo URL" value="{{ prod[3] }}">
+        <input type="text" class="form-control" id="product_url_photo" name="product_url_photo" placeholder="Photo URL" value="{{ product.product_url_photo }}">
       </div>
       <div class="row">
         <div class="form-group col-md-2">
           <label for="product_price">Price</label>
-          <input type="number" class="form-control" name="product_price" id="product_price" placeholder="0" step="0.01" value="{{ prod[4] }}">
+          <input type="number" class="form-control" name="product_price" id="product_price" placeholder="0" step="0.01" value="{{ product.product_price }}">
         </div>
         <div class="form-group col-md-2">
           <label for="product_min_price">Min</label>
-          <input type="text" class="form-control" id="product_min_price" name="product_min_price" value="{{ prod[7] }}" readonly>
+          <input type="text" class="form-control" id="product_min_price" name="product_min_price" value="{{ product.product_min_price }}" readonly>
         </div>
         <div class="form-group col-md-2">
           <label for="product_max_price">Max</label>
-          <input type="text" class="form-control" id="product_max_price" name="product_max_price" value="{{ prod[8] }}" readonly>
+          <input type="text" class="form-control" id="product_max_price" name="product_max_price" value="{{ product.product_max_price }}" readonly>
         </div>
       </div>
       <div class="row">
         <div class="form-group col-md-6">
           <label for="product_rating">Rating</label>
-          <input type="text" class="form-control" id="product_rating" name="product_rating" value="{{ prod[5] }}" readonly>
+          <input type="text" class="form-control" id="product_rating" name="product_rating" value="{{ product.product_rating }}" readonly>
         </div>
         <div class="form-group col-md-6">
           <label for="product_reviews">Reviews</label>
-          <input type="text" class="form-control" id="product_reviews" name="product_reviews" value="{{ prod[6] }}" readonly>
+          <input type="text" class="form-control" id="product_reviews" name="product_reviews" value="{{ product.product_reviews }}" readonly>
         </div>
       </div>
-      <!--{% endfor %}-->
 
       <button type="submit" class="btn btn-primary">Save</button>
 

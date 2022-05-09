@@ -37,10 +37,20 @@ class Product(db.Model):
 
     def __repr__(self) -> str:
         return f"Product: {self.product_desc} / URL: {self.product_url}"
-    
+
+    @staticmethod
+    def get_all_products():
+        return Product.query.order_by(Product.product_date_update.desc(), Product.product_id).all()
+
     @staticmethod
     def get_by_id(id):
         return Product.query.filter_by(product_id=id).first()
+    
+    @staticmethod
+    def delete_product(id):
+        Product.query.filter_by(product_id=id).delete()
+        db.session.commit()
+
 
 
 class Price(db.Model):
