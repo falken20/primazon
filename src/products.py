@@ -88,29 +88,13 @@ def create_product(values):
         product_rating = values.get('product_rating')
         product_reviews = values.get('product_reviews')
 
-        """
         sql = "INSERT INTO t_products (product_url, product_desc, product_url_photo, product_price, product_rating, "
         sql += " product_reviews, product_min_price, product_max_price)"
         sql += f" VALUES ('{product_url}', '{product_desc}', '{product_url_photo}', {product_price}, '{product_rating}',"
         sql += f" '{product_reviews}', {product_price}, {product_price})"
 
         utils_db.exec_sql_statement(sql)
-        """
-
-        new_product = Product(
-            product_url=product_url,
-            product_desc=product_desc,
-            product_url_photo=product_url_photo,
-            product_price=product_price,
-            product_rating=product_rating,
-            product_reviews=product_reviews,
-            product_min_price=product_price,
-            product_max_price=product_price,
-        )
-        db.session.add(new_product)
-        db.session.commit()
-
-
+        
         return True
     except Exception as err:
         console.print(

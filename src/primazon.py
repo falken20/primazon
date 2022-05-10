@@ -52,7 +52,8 @@ def create_product():
         console.print(
             "Method to show [bold]create product[/bold] page...", style="blue")
         if request.method == 'POST':
-            products.create_product(request.form)
+            #products.create_product(request.form)
+            Product.create_product(request.form)
             return redirect(url_for('index'))
 
         return render_template('product_form.html')
@@ -89,7 +90,7 @@ def edit_product(product_id):
         console.print(
             f"Method to [bold]edit product[/bold] with id: {product_id}", style="blue")
         #product = products.get_product(product_id)
-        product = Product.get_by_id(product_id)
+        product = Product.get_product(product_id)
 
         return render_template('product_edit.html', product=product)
 
@@ -106,7 +107,8 @@ def update_product():
     try:
         console.print(
             "Method to [bold]update product[/bold]...", style="blue")
-        products.update_product(request.form)
+        #products.update_product(request.form)
+        Product.update_product(request.form)
 
         return redirect(url_for('index'))
 
