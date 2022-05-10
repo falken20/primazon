@@ -43,14 +43,56 @@ class Product(db.Model):
         return Product.query.order_by(Product.product_date_update.desc(), Product.product_id).all()
 
     @staticmethod
-    def get_by_id(id):
+    def get_product(id):
         return Product.query.filter_by(product_id=id).first()
-    
+
     @staticmethod
     def delete_product(id):
         Product.query.filter_by(product_id=id).delete()
         db.session.commit()
 
+    @staticmethod
+    def create_product(values):
+        new_product = Product(
+            product_url=values.get('product_url'),
+            product_desc=values.get('product_desc'),
+            product_url_photo=values.get('product_url_photo'),
+            product_price=values.get(
+                'product_price') if values.get('product_price') else 0,
+            product_rating=values.get('product_rating'),
+            product_reviews=values.get('product_reviews'),
+            product_min_price=values.get(
+                'product_price') if values.get('product_price') else 0,
+            product_max_price=values.get(
+                'product_price') if values.get('product_price') else 0,
+        )
+        db.session.add(new_product)
+        db.session.commit()
+
+    @staticmethod
+    def update_product(values):
+        product_to_update = Product.get_product(values.get('product_id'))
+
+        product_to_update.product_date_update = datetime.datetime.now()
+        product_to_update.product_url = values.get('product_url')
+        product_to_update.product_desc = values.get('product_desc')
+        product_to_update.product_url_photo = values.get('product_url_photo')
+        product_to_update.product_price = values.get(
+            'product_price') if values.get('product_price') else 0
+        product_to_update.product_rating = values.get('product_rating')
+        product_to_update.product_reviews = values.get('product_reviews')
+
+        product_price = float(product_to_update.product_price)
+        product_min_price = float(product_to_update.product_min_price)
+        product_max_price = float(product_to_update.product_max_price)
+
+        if product_price < product_min_price or product_min_price == 0:
+            product_to_update.product_min_price = product_to_update.product_price
+
+        if product_price > product_max_price or product_max_price == 0:
+            product_to_update.product_max_price = product_to_update.product_price
+
+        db.session.commit()
 
 
 class Price(db.Model):
