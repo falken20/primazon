@@ -5,6 +5,7 @@
 
 import datetime
 import sys
+from numpy import product
 from rich.console import Console
 from sqlalchemy.sql import func
 from flask_sqlalchemy import SQLAlchemy
@@ -36,7 +37,7 @@ class Product(db.Model):
     product_prices = db.relationship('Price')
 
     def __repr__(self) -> str:
-        return f"Product: {self.product_desc} / URL: {self.product_url}"
+        return f"ID: {self.product_id} / Product: {self.product_desc} / URL: {self.product_url}"
 
     @staticmethod
     def get_all_products():
@@ -66,8 +67,11 @@ class Product(db.Model):
             product_max_price=values.get(
                 'product_price') if values.get('product_price') else 0,
         )
-        db.session.add(new_product)
+        db.session.add(new_product)        
         db.session.commit()
+
+        # Add the first price
+        Price.insert_product_price(new_product.product_id, new_product.product_price)
 
     @staticmethod
     def update_product(values):
@@ -77,6 +81,12 @@ class Product(db.Model):
         product_to_update.product_url = values.get('product_url')
         product_to_update.product_desc = values.get('product_desc')
         product_to_update.product_url_photo = values.get('product_url_photo')
+
+        if float(product_to_update.product_price) != float(values.get('product_price')):
+            update_price = True 
+        else:
+            update_price = False
+
         product_to_update.product_price = values.get(
             'product_price') if values.get('product_price') else 0
         product_to_update.product_rating = values.get('product_rating')
@@ -93,6 +103,9 @@ class Product(db.Model):
             product_to_update.product_max_price = product_to_update.product_price
 
         db.session.commit()
+
+        if update_price:
+            Price.insert_product_price(product_to_update.product_id, product_to_update.product_price)
 
 
 class Price(db.Model):
@@ -113,6 +126,12 @@ class Price(db.Model):
 
     def __repr__(self) -> str:
         return f"Product price: {self.product_id} - {self.product_price}"
+
+    @staticmethod
+    def insert_product_price(id, price):
+        new_price = Price(product_id=id, product_price=price)
+        db.session.add(new_price)
+        db.session.commit()
 
 
 def init_db():
