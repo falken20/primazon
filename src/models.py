@@ -67,11 +67,12 @@ class Product(db.Model):
             product_max_price=values.get(
                 'product_price') if values.get('product_price') else 0,
         )
-        db.session.add(new_product)        
+        db.session.add(new_product)
         db.session.commit()
 
         # Add the first price
-        Price.insert_product_price(new_product.product_id, new_product.product_price)
+        Price.insert_product_price(
+            new_product.product_id, new_product.product_price)
 
     @staticmethod
     def update_product(values):
@@ -83,7 +84,7 @@ class Product(db.Model):
         product_to_update.product_url_photo = values.get('product_url_photo')
 
         if float(product_to_update.product_price) != float(values.get('product_price')):
-            update_price = True 
+            update_price = True
         else:
             update_price = False
 
@@ -105,7 +106,8 @@ class Product(db.Model):
         db.session.commit()
 
         if update_price:
-            Price.insert_product_price(product_to_update.product_id, product_to_update.product_price)
+            Price.insert_product_price(
+                product_to_update.product_id, product_to_update.product_price)
 
 
 class Price(db.Model):
@@ -128,8 +130,14 @@ class Price(db.Model):
         return f"Product price: {self.product_id} - {self.product_price}"
 
     @staticmethod
-    def insert_product_price(id, price):
-        new_price = Price(product_id=id, product_price=price)
+    def get_prices_product(product_id):
+        product_prices = Price.query.filter_by(product_id=product_id).order_by(
+            Price.price_date_added.desc()).all()
+        return product_prices
+
+    @staticmethod
+    def insert_product_price(product_id, price):
+        new_price = Price(product_id=product_id, product_price=price)
         db.session.add(new_price)
         db.session.commit()
 

@@ -34,7 +34,7 @@ db.init_app(app)
 def index():
     console.print("Method to show [bold]index[/bold] page...", style="blue")
     # Get all the products
-    # all_products = products.get_all_products()
+    #_NO_ORM all_products = products.get_all_products()
     all_products = Product.get_all_products()
 
     return render_template('product_list.html', products=all_products)
@@ -52,7 +52,7 @@ def create_product():
         console.print(
             "Method to show [bold]create product[/bold] page...", style="blue")
         if request.method == 'POST':
-            #products.create_product(request.form)
+            #_NO_ORM products.create_product(request.form)
             Product.create_product(request.form)
             return redirect(url_for('index'))
 
@@ -71,7 +71,7 @@ def delete_product(product_id):
     try:
         console.print(
             f"Method to [bold]delete product[/bold] with id: {product_id}", style="blue")
-        # products.delete_product(product_id)
+        #_NO_ORM products.delete_product(product_id)
         Product.delete_product(product_id)
 
         return redirect(url_for('index'))
@@ -89,7 +89,7 @@ def edit_product(product_id):
     try:
         console.print(
             f"Method to [bold]edit product[/bold] with id: {product_id}", style="blue")
-        #product = products.get_product(product_id)
+        #_NO_ORM product = products.get_product(product_id)
         product = Product.get_product(product_id)
 
         return render_template('product_edit.html', product=product)
@@ -107,7 +107,7 @@ def update_product():
     try:
         console.print(
             "Method to [bold]update product[/bold]...", style="blue")
-        #products.update_product(request.form)
+        #_NO_ORM products.update_product(request.form)
         Product.update_product(request.form)
 
         return redirect(url_for('index'))
@@ -219,23 +219,26 @@ def run_process():
         console.print(
             "Process to [bold]refresh [bold]ALL[/bold] data product[/bold]", style="blue")
 
-        all_products = products.get_all_products()
+        #_NO_ORM all_products = products.get_all_products()
+        all_products = Product.get_all_products()
 
         for product in all_products:
-            amazon_data = utils.scrap_web(product[products.IDX_PRODUCT_URL])
+            #_NO_ORM amazon_data = utils.scrap_web(product[products.IDX_PRODUCT_URL])
+            amazon_data = utils.scrap_web(product.product_url)
             console.print(
                 f"Getting [bold]Amazon[/bold] data: {amazon_data}", style="blue")
 
             if amazon_data is None:
                 console.print(
-                    f"Impossible to get data from Amazon for the product url '{product[products.IDX_PRODUCT_URL]}'",
+                    f"Impossible to get data from Amazon for the product url '{product.product_url}'",
                     style="red bold")
             else:
                 product_to_update = update_product_from_amazon(
                     product, amazon_data)
-                products.update_product(product_to_update)
+                #_NO_ORM products.update_product(product_to_update)
+                Product.update_product(product_to_update)
                 console.print(
-                    f"Product with id {product[0]} succesfully updated", style="blue")
+                    f"Product with id {product.product_id} succesfully updated", style="blue")
 
         console.print(
             "Process to [bold]refresh [bold]ALL[/bold] data product[/bold] finished succesfully", style="blue")
