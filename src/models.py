@@ -5,7 +5,6 @@
 
 import datetime
 import sys
-from numpy import product
 from rich.console import Console
 from sqlalchemy.sql import func
 from flask_sqlalchemy import SQLAlchemy
@@ -136,8 +135,8 @@ class Price(db.Model):
         return product_prices
 
     @staticmethod
-    def insert_product_price(product_id, price):
-        new_price = Price(product_id=product_id, product_price=price)
+    def insert_product_price(product_id, product_price):
+        new_price = Price(product_id=product_id, product_price=product_price)
         db.session.add(new_price)
         db.session.commit()
 
