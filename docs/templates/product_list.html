@@ -10,28 +10,28 @@
 
             <tr style="font-size:smaller;">
                 <div class="row">
-                    <td style="width: 15%; text-align: center;">
-                        <img src="{{ product[3] }}" height="70">
-                        <div style="font-weight: bold; font-size: large;">{{ product[4] }} € </div>
-                        <div><small>Min: {{ product[7] }} €</small></div>
-                        <div><small>Max: {{ product[8] }} €</small></div>
+                    <td style="width: 20%; text-align: center;">
+                        <img src="{{ product.product_url_photo }}" height="70">
+                        <div style="font-weight: bold; font-size: medium;">{{ product.product_price }} € </div>
+                        <div><small>Min: {{ product.product_min_price }} €</small></div>
+                        <div><small>Max: {{ product.product_max_price }} €</small></div>
                     </td>
-                    <td style="width:85%" colspan="2"> 
+                    <td style="width:80%" colspan="2"> 
                         <div style="font-weight: bold;">
-                            <a href="{{ product[1] }}" target="_blank">{{ product[2] }}</a>
+                            <a href="{{ product.product_url }}" target="_blank">{{ product.product_desc }}</a>
                         </div>
-                        <div><small style="font-weight: bold;">Update Date: {{ product[10] }} </small></div>
-                        <div><small style="color:red;font-weight: bold;">{{ product[5] }} </small></div>
-                        <div><small style="color:red;font-weight: bold;">{{ product[6] }}</small></div>
+                        <div><small style="font-weight: bold;">Update Date: {{ product.product_date_update }} </small></div>
+                        <div><small style="color:red;font-weight: bold;">{{ product.product_rating }} </small></div>
+                        <div><small style="color:red;font-weight: bold;">{{ product.product_reviews }}</small></div>
                     </td>
                 </div>
             </tr>
             <tr>
                 <div class="row">
-                    <td><a class="btn btn-warning btn-sm btn-block" href="{{ url_for('refresh_data', product_id=product[0]) }}">
+                    <td><a class="btn btn-warning btn-sm btn-block" href="{{ url_for('refresh_data', product_id=product.product_id) }}">
                         <img src="/static/img/amazon.jpeg" height="20" /> </a></td>
-                    <td><a class="btn btn-success btn-sm btn-block" href="{{url_for('edit_product', product_id=product[0])}}">Edit</a></td>
-                    <td><a class="btn btn-danger btn-sm btn-block" href="{{url_for('delete_product', product_id=product[0])}}">Delete</a></td>
+                    <td><a class="btn btn-success btn-sm btn-block" href="{{url_for('edit_product', product_id=product.product_id)}}">Edit</a></td>
+                    <td><a class="btn btn-danger btn-sm btn-block" href="{{url_for('delete_product', product_id=product.product_id)}}">Delete</a></td>
                 </div>
             </tr>
 

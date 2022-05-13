@@ -1,12 +1,10 @@
 # by Richi Rod AKA @richionline / falken20
+
 import sys
 import os
 import re
-from click import style
 import requests
 import json
-from lxml.html import fromstring
-
 from rich.console import Console
 from selectorlib import Extractor
 from bs4 import BeautifulSoup
@@ -23,8 +21,10 @@ headers = {
     'cache-control': 'no-cache',
     'dnt': '1',
     'upgrade-insecure-requests': '1',
-    'user-agent': 'Mozilla/5.0 (X11; CrOS x86_64 8172.45.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.64 Safari/537.36',
-    'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+    'user-agent': 'Mozilla/5.0 (X11; CrOS x86_64 8172.45.0) AppleWebKit/537.36' +
+    '(KHTML, like Gecko) Chrome/51.0.2704.64 Safari/537.36',
+    'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,' +
+    'image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
     'sec-fetch-site': 'none',
     'sec-fetch-mode': 'navigate',
     'sec-fetch-dest': 'document',
@@ -41,13 +41,14 @@ def get_proxies():
     """
     try:
         console.print(
-            f"Method get_proxies to get free proxies...", style="blue")
+            "Method get_proxies to get free proxies...", style="blue")
 
         url = 'https://free-proxy-list.net/'
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Cafari/537.36'}
+        headers_proxy = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36' +
+            '(KHTML, like Gecko) Cafari/537.36'}
 
-        source = str(requests.get(url, headers=headers, timeout=10).text)
+        source = str(requests.get(url, headers=headers_proxy, timeout=10).text)
         data = [list(filter(None, i))[0] for i in re.findall(
             '<td class="hm">(.*?)</td>|<td>(.*?)</td>', source)]
 
@@ -60,7 +61,7 @@ def get_proxies():
         return proxies
     except Exception as err:
         console.print(
-            f"Error in get_proxies method:" +
+            "Error in get_proxies method:" +
             f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
             f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
             f"\n{format(err)}", style="red bold")
@@ -78,7 +79,7 @@ def scrap_by_selectorlib(page):
     """
     try:
         console.print(
-            f"Method scrap_by_selectorlib to scrap the Amazon page...", style="blue")
+            "Method scrap_by_selectorlib to scrap the Amazon page...", style="blue")
         extractor = Extractor.from_yaml_file(os.path.join(
             os.path.dirname(__file__), 'selectors.yml'))
         data_product = extractor.extract(page.text)
@@ -95,7 +96,7 @@ def scrap_by_selectorlib(page):
         return data_product
     except Exception as err:
         console.print(
-            f"Error in scrap_by_selectorlib method:" +
+            "Error in scrap_by_selectorlib method:" +
             f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
             f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
             f"\n{format(err)}", style="red bold")
@@ -113,7 +114,7 @@ def scrap_by_beautifulsoup(page):
     """
     try:
         console.print(
-            f"Method scrap_by_beautifulsoup to scrap the Amazon page...", style="blue")
+            "Method scrap_by_beautifulsoup to scrap the Amazon page...", style="blue")
         soup = BeautifulSoup(page.content, "html.parser")
 
         print(soup.find(id="productTitle").text.strip())  # By DOM element id
@@ -128,7 +129,7 @@ def scrap_by_beautifulsoup(page):
 
     except Exception as err:
         console.print(
-            f"Error in scrap_by_beautifulsoup method:" +
+            "Error in scrap_by_beautifulsoup method:" +
             f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
             f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
             f"\n{format(err)}", style="red bold")
@@ -152,7 +153,7 @@ def scrap_web(url):
             page = requests.get(url, headers=headers, proxies={
                                 "http": proxies[0], "https": proxies[0]})
         else:
-            console.print(f"Don't use proxy to access to Amazon", style="blue")
+            console.print("Don't use proxy to access to Amazon", style="blue")
             page = requests.get(url, headers=headers)
 
         if page.status_code > 500:
@@ -175,14 +176,14 @@ def scrap_web(url):
 
     except Exception as err:
         console.print(
-            f"Error scrapping url web:" +
+            "Error scrapping url web:" +
             f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
             f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
             f"\n{format(err)}", style="red bold")
 
 
 if __name__ == "__main__":
-    console.print(f"Starting primazon utils...", style="bold green")
+    console.print("Starting primazon utils...", style="bold green")
     console.print("Select option:", style="yellow")
     console.print("1. Scrap url", style="yellow")
     console.print("2. Exit", style="yellow")
@@ -193,4 +194,4 @@ if __name__ == "__main__":
         url = input() if not url else ""
         scrap_web(url)
 
-    console.print(f"Primazon utils finished", style="bold green")
+    console.print("Primazon utils finished", style="bold green")
