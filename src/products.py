@@ -5,7 +5,6 @@ import datetime
 from rich.console import Console
 
 from . import utils_db
-from src.models import Product, Price, db
 
 IDX_PRODUCT_ID = 0
 IDX_PRODUCT_URL = 1
@@ -34,7 +33,7 @@ def get_all_products():
     try:
         sql = 'SELECT * FROM t_products ORDER BY product_date_updated DESC, product_id;'
         products = utils_db.exec_sql_statement(sql)
-        
+
         return products
     except Exception as err:
         console.print(
@@ -94,7 +93,7 @@ def create_product(values):
         sql += f" '{product_reviews}', {product_price}, {product_price})"
 
         utils_db.exec_sql_statement(sql)
-        
+
         return True
     except Exception as err:
         console.print(
