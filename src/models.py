@@ -70,7 +70,8 @@ class Product(db.Model):
         db.session.commit()
 
         # Add the first price
-        Price.insert_product_price(
+        if float(new_product.product_price) != 0:
+            Price.insert_product_price(
             new_product.product_id, new_product.product_price)
 
     @staticmethod
