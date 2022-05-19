@@ -4,6 +4,8 @@ venv/
 .venv/
 .env
 *.sqlite3
+.coverage
+.coverage.*
 
 # IDE folders
 # Mac
