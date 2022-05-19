@@ -72,7 +72,7 @@ class Product(db.Model):
         # Add the first price
         if float(new_product.product_price) != 0:
             Price.insert_product_price(
-            new_product.product_id, new_product.product_price)
+                new_product.product_id, new_product.product_price)
 
     @staticmethod
     def update_product(values):
