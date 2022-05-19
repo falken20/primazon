@@ -12,7 +12,7 @@ flake8 src tests --count --exit-zero --max-complexity=10 --max-line-length=127 -
 echo "***** Unit Test *****"
 coverage run -m pytest -v 
 echo "***** Coverage tests *****"
-coverage report --omit="*/tests/*,*/venv/*"
+coverage report --omit="*/tests/*,*/venv/*" -m ./src/*.py
 
 # Coverage report in html
 # coverage run -m pytest -v && coverage html --omit="*/test/*,*/venv/*"
