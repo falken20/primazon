@@ -1,14 +1,17 @@
 # by Richi Rod AKA @richionline / falken20
 
+from shutil import ExecError
 import sys
 import os
 from flask import Flask, render_template, url_for, request, redirect
 from rich.console import Console
+import logging
 
 from . import utils
 from src.models import Product
 from src.models import Price
 from src.models import db
+from . import utils_logs
 
 # Create console object for logs
 console = Console()
@@ -30,6 +33,12 @@ db.init_app(app)
 @app.route('/')
 @app.route('/home')
 def index():
+    utils_logs.loggear("Error Loggear2", "INFO")
+    try:
+        raise Exception("Super error")
+    except Exception as err:
+        utils_logs.loggear("Errorazo", "ERROR", err, sys=sys)
+
     console.print("Method to show [bold]index[/bold] page...", style="blue")
     # Get all the products
     # NO_ORM all_products = products.get_all_products()
