@@ -1,20 +1,14 @@
 # by Richi Rod AKA @richionline / falken20
 
-from shutil import ExecError
 import sys
 import os
 from flask import Flask, render_template, url_for, request, redirect
-from rich.console import Console
-import logging
 
 from . import utils
 from src.models import Product
 from src.models import Price
 from src.models import db
-from . import utils_logs
-
-# Create console object for logs
-console = Console()
+from src.utils_logs import loggear
 
 app = Flask(__name__, template_folder='../docs/templates',
             static_folder='../docs/static')
@@ -33,13 +27,7 @@ db.init_app(app)
 @app.route('/')
 @app.route('/home')
 def index():
-    utils_logs.loggear("Error Loggear2", "INFO")
-    try:
-        raise Exception("Super error")
-    except Exception as err:
-        utils_logs.loggear("Errorazo", "ERROR", err, sys=sys)
-
-    console.print("Method to show [bold]index[/bold] page...", style="blue")
+    loggear("Method to show [bold]index[/bold] page...", "INFO")
     # Get all the products
     # NO_ORM all_products = products.get_all_products()
     all_products = Product.get_all_products()
@@ -49,15 +37,15 @@ def index():
 
 @app.route('/about/')
 def about():
-    console.print("Method to show [bold]about[/bold] page...", style="blue")
+    loggear("Method to show [bold]about[/bold] page...", "INFO")
     return render_template('about.html')
 
 
 @app.route('/products/add/', methods=('GET', 'POST'))
 def create_product():
     try:
-        console.print(
-            "Method to show [bold]create product[/bold] page...", style="blue")
+        loggear(
+            "Method to show [bold]create product[/bold] page...", "INFO")
         if request.method == 'POST':
             # NO_ORM products.create_product(request.form)
             Product.create_product(request.form)
@@ -66,65 +54,48 @@ def create_product():
         return render_template('product_form.html')
 
     except Exception as err:
-        console.print(
-            "Error showing create product page:" +
-            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
-            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
-            f"\n{format(err)}", style="red bold")
+        loggear("Error showing create product page:", "ERROR", err, sys)
 
 
 @app.route('/products/delete/<int:product_id>')
 def delete_product(product_id):
     try:
-        console.print(
-            f"Method to [bold]delete product[/bold] with id: {product_id}", style="blue")
+        loggear(
+            f"Method to [bold]delete product[/bold] with id: {product_id}", "INFO")
         # NO_ORM products.delete_product(product_id)
         Product.delete_product(product_id)
 
         return redirect(url_for('index'))
 
     except Exception as err:
-        console.print(
-            "Error in delete_product method:" +
-            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
-            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
-            f"\n{format(err)}", style="red bold")
+        loggear("Error in delete_product method:", "ERROR", err, sys)
 
 
 @app.route('/products/edit/<int:product_id>')
 def edit_product(product_id):
     try:
-        console.print(
-            f"Method to [bold]edit product[/bold] with id: {product_id}", style="blue")
+        loggear(
+            f"Method to [bold]edit product[/bold] with id: {product_id}", "INFO")
         # NO_ORM product = products.get_product(product_id)
         product = Product.get_product(product_id)
 
         return render_template('product_edit.html', product=product)
 
     except Exception as err:
-        console.print(
-            "Error in edit_product method:" +
-            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
-            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
-            f"\n{format(err)}", style="red bold")
+        loggear("Error in edit_product method:", "ERROR", err, sys)
 
 
 @app.route('/products/update', methods=["POST"])
 def update_product():
     try:
-        console.print(
-            "Method to [bold]update product[/bold]...", style="blue")
+        loggear("Method to [bold]update product[/bold]...", "INFO")
         # NO_ORM products.update_product(request.form)
         Product.update_product(request.form)
 
         return redirect(url_for('index'))
 
     except Exception as err:
-        console.print(
-            "Error in edit_product method:" +
-            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
-            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
-            f"\n{format(err)}", style="red bold")
+        loggear("Error in edit_product method:", "ERROR", err, sys)
 
 
 def update_product_from_amazon(product, amazon_data):
@@ -177,56 +148,48 @@ def update_product_from_amazon(product, amazon_data):
         return product_to_update
 
     except Exception as err:
-        console.print(
-            "Error in update_product_from_amazon method:" +
-            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
-            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
-            f"\n{format(err)}", style="red bold")
+        loggear("Error in update_product_from_amazon method:", "ERROR", err, sys)
 
 
 @app.route('/product/refresh/<int:product_id>')
 def refresh_data(product_id):
     try:
-        console.print(
-            f"Method to [bold]refresh data product[/bold] with id: {product_id}", style="blue")
+        loggear(
+            f"Method to [bold]refresh data product[/bold] with id: {product_id}", "INFO")
 
         # NO_ORM product = products.get_product(product_id)[0]
         product = Product.get_product(product_id)
         # NO_ORM product_url = product[products.IDX_PRODUCT_URL]
-        console.print(f"Product to check: {product}", style="blue")
-        console.print(f"Amazon url to check: {product.product_url}", style="blue")
+        loggear(f"Product to check: {product}", "DEBUG")
+        loggear(f"Amazon url to check: {product.product_url}", "DEBUG")
 
         amazon_data = utils.scrap_web(product.product_url)
-        console.print(
-            f"Getting [bold]Amazon[/bold] data: {amazon_data}", style="blue")
+        loggear(
+            f"Getting [bold]Amazon[/bold] data: {amazon_data}", "DEBUG")
 
         if amazon_data is None:
-            console.print(
-                f"Impossible to get data from Amazon for the product url '{product.product_url}'", style="red bold")
+            loggear(
+                f"Impossible to get data from Amazon for the product url '{product.product_url}'", "WARNING")
         else:
             product_to_update = update_product_from_amazon(
                 product, amazon_data)
             # NO_ORM products.update_product(product_to_update)
             Product.update_product(product_to_update)
-            console.print(
-                f"Product with id {product.product_id} succesfully updated", style="blue")
+            loggear(
+                f"Product with id {product.product_id} succesfully updated", "INFO")
 
         return redirect(url_for('index'))
         # return redirect(url_for('edit_product', product_id=product_id))
 
     except Exception as err:
-        console.print(
-            "Error in refresh_data method:" +
-            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
-            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
-            f"\n{format(err)}", style="red bold")
+        loggear("Error in refresh_data method:", "ERROR", err, sys)
 
 
 @app.route('/run_process')
 def run_process():
     try:
-        console.print(
-            "Process to [bold]refresh [bold]ALL[/bold] data product[/bold]", style="blue")
+        loggear(
+            "Process to [bold]refresh [bold]ALL[/bold] data product[/bold]", "INFO")
 
         # NO_ORM all_products = products.get_all_products()
         all_products = Product.get_all_products()
@@ -234,29 +197,25 @@ def run_process():
         for product in all_products:
             # NO_ORM amazon_data = utils.scrap_web(product[products.IDX_PRODUCT_URL])
             amazon_data = utils.scrap_web(product.product_url)
-            console.print(
-                f"Getting [bold]Amazon[/bold] data: {amazon_data}", style="blue")
+            loggear(
+                f"Getting [bold]Amazon[/bold] data: {amazon_data}", "DEBUG")
 
             if amazon_data is None:
-                console.print(
+                loggear(
                     f"Impossible to get data from Amazon for the product url '{product.product_url}'",
-                    style="red bold")
+                    "WARNING")
             else:
                 product_to_update = update_product_from_amazon(
                     product, amazon_data)
                 # NO_ORM products.update_product(product_to_update)
                 Product.update_product(product_to_update)
-                console.print(
-                    f"Product with id {product.product_id} succesfully updated", style="blue")
+                loggear(
+                    f"Product with id {product.product_id} succesfully updated", "DEBUG")
 
-        console.print(
-            "Process to [bold]refresh [bold]ALL[/bold] data product[/bold] finished succesfully", style="blue")
+        loggear(
+            "Process to [bold]refresh [bold]ALL[/bold] data product[/bold] finished succesfully", "INFO")
 
         return redirect(url_for('index'))
 
     except Exception as err:
-        console.print(
-            "Error in run_process method:" +
-            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
-            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
-            f"\n{format(err)}", style="red bold")
+        loggear("Error in run_process method:", "ERROR", err, sys)

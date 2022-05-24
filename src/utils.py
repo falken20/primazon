@@ -5,15 +5,14 @@ import os
 import re
 import requests
 import json
-from rich.console import Console
 from selectorlib import Extractor
 from bs4 import BeautifulSoup
+
+from src.utils_logs import console, loggear
 
 # Load .env file
 # load_dotenv(find_dotenv())
 
-# Create console object
-console = Console()
 
 headers = {
     'authority': 'www.amazon.com',
@@ -175,11 +174,7 @@ def scrap_web(url):
         return data_product
 
     except Exception as err:
-        console.print(
-            "Error scrapping url web:" +
-            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
-            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
-            f"\n{format(err)}", style="red bold")
+        loggear("Error scrapping url web:", "ERROR", err, sys)
 
 
 if __name__ == "__main__":

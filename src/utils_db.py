@@ -11,13 +11,11 @@ import os
 import sys
 import psycopg2
 from dotenv import load_dotenv, find_dotenv
-from rich.console import Console
+
+from src.utils_logs import console
 
 # Load .env file
 load_dotenv(find_dotenv())
-
-# Create console object
-console = Console()
 
 
 def get_db_connection():

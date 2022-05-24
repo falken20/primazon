@@ -1,12 +1,9 @@
 # by Richi Rod AKA @richionline / falken20
 
 import sys
-from rich.console import Console
 
 from src import utils_db
-
-# Create console object for logs
-console = Console()
+from src.utils_logs import console
 
 
 def get_prices_product(product_id):

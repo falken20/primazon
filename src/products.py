@@ -2,9 +2,9 @@
 
 import sys
 import datetime
-from rich.console import Console
 
 from . import utils_db
+from src.utils_logs import console
 
 IDX_PRODUCT_ID = 0
 IDX_PRODUCT_URL = 1
@@ -17,10 +17,6 @@ IDX_PRODUCT_MIN_PRICE = 7
 IDX_PRODUCT_MAX_PRICE = 8
 IDX_PRODUCT_DATE_ADDED = 9
 IDX_PRODUCT_DATE_UPDATED = 10
-
-
-# Create console object for logs
-console = Console()
 
 
 def get_all_products():

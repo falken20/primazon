@@ -5,13 +5,10 @@
 
 import datetime
 import sys
-from rich.console import Console
 from sqlalchemy.sql import func
 from flask_sqlalchemy import SQLAlchemy
 
-
-# Create console object for logs
-console = Console()
+from src.utils_logs import console
 
 # Create db object
 db = SQLAlchemy()
