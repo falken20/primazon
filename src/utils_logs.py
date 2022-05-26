@@ -34,6 +34,9 @@ def loggear(message="", level="INFO", err=Exception, sys=sys):
     except Exception as err:
         console.print(time, level, message, f"\nError: {format(err)}", style=style_ERROR)
 
+
+
+
 """
 import logging
 

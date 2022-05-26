@@ -4,7 +4,7 @@ import sys
 import datetime
 
 from . import utils_db
-from src.utils_logs import console
+from src.utils_logs import loggear
 
 IDX_PRODUCT_ID = 0
 IDX_PRODUCT_URL = 1
@@ -32,11 +32,7 @@ def get_all_products():
 
         return products
     except Exception as err:
-        console.print(
-            "Error in method get_all_products:" +
-            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
-            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
-            f"\n{format(err)}", style="red bold")
+        loggear("Error in method get_all_products:", "ERROR", err, sys)
         return False
 
 
@@ -56,11 +52,7 @@ def get_product(product_id):
 
         return product
     except Exception as err:
-        console.print(
-            "Error in method get_product:" +
-            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
-            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
-            f"\n{format(err)}", style="red bold")
+        loggear("Error in method get_product:", "ERROR", err, sys)
         return False
 
 
@@ -92,11 +84,7 @@ def create_product(values):
 
         return True
     except Exception as err:
-        console.print(
-            "Error in method create_product:" +
-            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
-            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
-            f"\n{format(err)}", style="red bold")
+        loggear("Error in method create_product:", "ERROR", err, sys)
         return False
 
 
@@ -117,11 +105,7 @@ def delete_product(product_id):
         return True
 
     except Exception as err:
-        console.print(
-            "Error in method delete_product:" +
-            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
-            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
-            f"\n{format(err)}", style="red bold")
+        loggear("Error in method delete_product:", "ERROR", err, sys)
         return False
 
 
@@ -161,9 +145,5 @@ def update_product(values):
 
         return True
     except Exception as err:
-        console.print(
-            "Error in method create_product:" +
-            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
-            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
-            f"\n{format(err)}", style="red bold")
+        loggear("Error in method create_product:", "ERROR", err, sys)
         return False

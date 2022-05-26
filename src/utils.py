@@ -8,7 +8,7 @@ import json
 from selectorlib import Extractor
 from bs4 import BeautifulSoup
 
-from src.utils_logs import console, loggear
+from src.utils_logs import loggear
 
 # Load .env file
 # load_dotenv(find_dotenv())
@@ -39,8 +39,7 @@ def get_proxies():
         set: List of free proxies
     """
     try:
-        console.print(
-            "Method get_proxies to get free proxies...", style="blue")
+        loggear("Method get_proxies to get free proxies...", "INFO")
 
         url = 'https://free-proxy-list.net/'
         headers_proxy = {
@@ -59,11 +58,7 @@ def get_proxies():
 
         return proxies
     except Exception as err:
-        console.print(
-            "Error in get_proxies method:" +
-            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
-            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
-            f"\n{format(err)}", style="red bold")
+        loggear("Error in get_proxies method:", "ERROR", err, sys)
 
 
 def scrap_by_selectorlib(page):
@@ -77,15 +72,14 @@ def scrap_by_selectorlib(page):
         dict: product data
     """
     try:
-        console.print(
-            "Method scrap_by_selectorlib to scrap the Amazon page...", style="blue")
+        loggear("Method scrap_by_selectorlib to scrap the Amazon page...", "INFO")
         extractor = Extractor.from_yaml_file(os.path.join(
             os.path.dirname(__file__), 'selectors.yml'))
         data_product = extractor.extract(page.text)
 
         # Get only the first image, its a string dict so that it is necessary
         # to use json.loads to get a dict, after that it takes the first image
-        console.print(f"Amazon metadata product: {data_product}", style="blue")
+        loggear(f"Amazon metadata product: {data_product}", "DEBUG")
         if data_product['images']:
             data_product['images'] = next(
                 iter(json.loads(data_product['images'])))
@@ -94,11 +88,7 @@ def scrap_by_selectorlib(page):
 
         return data_product
     except Exception as err:
-        console.print(
-            "Error in scrap_by_selectorlib method:" +
-            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
-            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
-            f"\n{format(err)}", style="red bold")
+        loggear("Error in scrap_by_selectorlib method:", "ERROR", err, sys)
 
 
 def scrap_by_beautifulsoup(page):
@@ -112,26 +102,21 @@ def scrap_by_beautifulsoup(page):
         dict: product data
     """
     try:
-        console.print(
-            "Method scrap_by_beautifulsoup to scrap the Amazon page...", style="blue")
+        loggear("Method scrap_by_beautifulsoup to scrap the Amazon page...", "INFO")
         soup = BeautifulSoup(page.content, "html.parser")
 
-        print(soup.find(id="productTitle").text.strip())  # By DOM element id
+        loggear(soup.find(id="productTitle").text.strip(), "DEBUG")  # By DOM element id
         # By DOM element class
-        print(soup.find(class_="a-offscreen").text.strip())
-        print(soup.find(class_="a-icon-alt").text.strip())
-        print(soup.find(id="acrCustomerReviewText"))
-        print(soup.find(class_="a-dynamic-image"))
+        loggear(soup.find(class_="a-offscreen").text.strip(), "DEBUG")
+        loggear(soup.find(class_="a-icon-alt").text.strip(), "DEBUG")
+        loggear(soup.find(id="acrCustomerReviewText"), "DEBUG")
+        loggear(soup.find(class_="a-dynamic-image"), "DEBUG")
 
         return True
         # ...continue
 
     except Exception as err:
-        console.print(
-            "Error in scrap_by_beautifulsoup method:" +
-            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
-            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
-            f"\n{format(err)}", style="red bold")
+        loggear("Error in scrap_by_beautifulsoup method:", "ERROR", err, sys)
 
 
 def scrap_web(url):
@@ -142,34 +127,32 @@ def scrap_web(url):
         url (str): url web to scrap
     """
     try:
-        console.print(
-            f"Method scrap_web to scrap the url: {url}", style="blue")
+        loggear(f"Method scrap_web to scrap the url: {url}", "INFO")
 
         proxies = get_proxies() if os.environ['PROXY'] in ["Y", "y"] else None
         if proxies:
-            console.print(
-                f"Use proxy to access to Amazon: {proxies[0]}", style="blue")
+            loggear(
+                f"Use proxy to access to Amazon: {proxies[0]}", "DEBUG")
             page = requests.get(url, headers=headers, proxies={
                                 "http": proxies[0], "https": proxies[0]})
         else:
-            console.print("Don't use proxy to access to Amazon", style="blue")
+            loggear("Don't use proxy to access to Amazon", "DEBUG")
             page = requests.get(url, headers=headers)
 
         if page.status_code > 500:
-            console. print("Page %s must have been blocked by Amazon as the status code was %d" % (
-                url, page.status_code), style="bold red")
+            loggear("Page %s must have been blocked by Amazon as the status code was %d" % (
+                url, page.status_code), "DEBUG")
             return None
         else:
             if "To discuss automated access to Amazon data please contact api-services-support@amazon.com" in page.text:
                 raise Exception(
                     "Page was blocked by Amazon. Please try using better proxies or try later")
 
-        console.print(f"Status code page: {page.status_code}", style="blue")
+        loggear(f"Status code page: {page.status_code}", "DEBUG")
         data_product = scrap_by_selectorlib(page)
         scrap_by_beautifulsoup(page)
 
-        console.print(
-            "[bold green]Process scrap_web finished[/bold green]")
+        loggear("Process scrap_web finished", "INFO")
 
         return data_product
 
@@ -178,15 +161,15 @@ def scrap_web(url):
 
 
 if __name__ == "__main__":
-    console.print("Starting primazon utils...", style="bold green")
-    console.print("Select option:", style="yellow")
-    console.print("1. Scrap url", style="yellow")
-    console.print("2. Exit", style="yellow")
+    loggear("Starting primazon utils...")
+    loggear("Select option:")
+    loggear("1. Scrap url")
+    loggear("2. Exit")
     option = input()
     if option == "1":
         url = str(sys.argv[1]) if len(sys.argv) > 1 else None
-        console.print("Please entry the url to scrap:", style="yellow")
+        loggear("Please entry the url to scrap:")
         url = input() if not url else ""
         scrap_web(url)
 
-    console.print("Primazon utils finished", style="bold green")
+    loggear("Primazon utils finished")
