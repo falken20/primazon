@@ -3,7 +3,7 @@
 import sys
 
 from src import utils_db
-from src.utils_logs import console
+from src.utils_logs import loggear
 
 
 def get_prices_product(product_id):
@@ -21,11 +21,7 @@ def get_prices_product(product_id):
 
         return product_prices
     except Exception as err:
-        console.print(
-            "Error in get_prices_product method:" +
-            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
-            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
-            f"\n{format(err)}", style="red bold")
+        loggear("Error in get_prices_product method:", "ERROR", err, sys)
 
 
 def insert_product_price(product_id, product_price):
@@ -43,8 +39,4 @@ def insert_product_price(product_id, product_price):
         utils_db.exec_sql_statement(sql)
 
     except Exception as err:
-        console.print(
-            "Error in insert_product_price method:" +
-            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
-            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
-            f"\n{format(err)}", style="red bold")
+        loggear("Error in insert_product_price method:", "ERROR", err, sys)
