@@ -12,7 +12,7 @@ import sys
 import psycopg2
 from dotenv import load_dotenv, find_dotenv
 
-from src.utils_logs import loggear
+from src.logger import loggear
 
 # Load .env file
 load_dotenv(find_dotenv())
