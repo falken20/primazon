@@ -3,7 +3,7 @@
 import sys
 
 from src import utils_db
-from src.utils_logs import loggear
+from src.logger import loggear
 
 
 def get_prices_product(product_id):

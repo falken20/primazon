@@ -9,7 +9,7 @@ import sys
 from sqlalchemy.sql import func
 from flask_sqlalchemy import SQLAlchemy
 
-from src.utils_logs import loggear
+import src.logger
 
 # Create db object
 db = SQLAlchemy()

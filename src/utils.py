@@ -8,7 +8,7 @@ import json
 from selectorlib import Extractor
 from bs4 import BeautifulSoup
 
-from src.utils_logs import loggear
+import src.logger
 
 # Load .env file
 # load_dotenv(find_dotenv())

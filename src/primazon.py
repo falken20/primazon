@@ -1,5 +1,6 @@
 # by Richi Rod AKA @richionline / falken20
 
+from asyncio.log import logger
 import sys
 import os
 from flask import Flask, render_template, url_for, request, redirect
@@ -8,7 +9,8 @@ from . import utils
 from src.models import Product
 from src.models import Price
 from src.models import db
-from src.utils_logs import loggear
+from src.logger import Log
+
 
 app = Flask(__name__, template_folder='../docs/templates',
             static_folder='../docs/static')
@@ -27,7 +29,7 @@ db.init_app(app)
 @app.route('/')
 @app.route('/home')
 def index():
-    loggear("Method to show [bold]index[/bold] page...", "INFO")
+    Log.debug("Method to show index page...")
     # Get all the products
     # NO_ORM all_products = products.get_all_products()
     all_products = Product.get_all_products()

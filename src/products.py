@@ -4,7 +4,7 @@ import sys
 import datetime
 
 from . import utils_db
-from src.utils_logs import loggear
+from src.logger import loggear
 
 IDX_PRODUCT_ID = 0
 IDX_PRODUCT_URL = 1
