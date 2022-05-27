@@ -5,13 +5,10 @@
 
 import datetime
 import sys
-from rich.console import Console
 from sqlalchemy.sql import func
 from flask_sqlalchemy import SQLAlchemy
 
-
-# Create console object for logs
-console = Console()
+from src.logger import Log
 
 # Create db object
 db = SQLAlchemy()
@@ -146,27 +143,23 @@ def init_db():
     """
     Main process to create the needed tables for the application
     """
-    console.print("Init DB process starting...", style="bold green")
+    Log.info("Init DB process starting...")
 
     try:
         if input("Could you drop the tables if they exist(y/n)? ") in ["Y", "y"]:
             db.drop_all()
-            console.print("Tables dropped", style="blue")
+            Log.info("Tables dropped")
 
         if input("Could you create the tables(y/n)? ") in ["Y", "y"]:
-            console.print("Creating tables...", style="blue")
+            Log.info("Creating tables...")
             db.create_all()
 
         db.session.commit()
 
-        console.print("Process finished succesfully", style="bold green")
+        Log.info("Process finished succesfully")
 
     except Exception as err:
-        console.print(
-            "Execution Error in init_db:" +
-            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
-            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
-            f"\n{format(err)}", style="red bold")
+        Log.error("Execution Error in init_db:", err=err, sys=sys)
 
 
 if __name__ == '__main__':
