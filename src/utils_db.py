@@ -11,13 +11,11 @@ import os
 import sys
 import psycopg2
 from dotenv import load_dotenv, find_dotenv
-from rich.console import Console
+
+from src.logger import Log, console
 
 # Load .env file
 load_dotenv(find_dotenv())
-
-# Create console object
-console = Console()
 
 
 def get_db_connection():
@@ -35,11 +33,7 @@ def get_db_connection():
             user=os.environ['DB_USERNAME'],
             password=os.environ['DB_PASSWORD'])
     except Exception as err:
-        console.print(
-            "Error getting connection to DB:" +
-            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
-            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
-            f"\n{format(err)}", style="red bold")
+        Log.error("Error getting connection to DB:", err, sys)
         return False
 
 
@@ -51,17 +45,12 @@ def drop_tables(cur):
         cur (_cursor): Cursor from database
     """
     try:
-        console.print("Drop table [bold]t_prices[/bold]...", style="blue")
+        Log.info("Drop table [bold]t_prices[/bold]...")
         cur.execute('DROP TABLE IF EXISTS t_prices;')
-        console.print(
-            "Drop table [bold]t_products[/bold]...", style="blue")
+        Log.info("Drop table [bold]t_products[/bold]...")
         cur.execute('DROP TABLE IF EXISTS t_products;')
     except Exception as err:
-        console.print(
-            "Error dropping tables from DB:" +
-            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
-            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
-            f"\n{format(err)}", style="red bold")
+        Log.error("Error dropping tables from DB:", err, sys)
 
 
 def create_table_products(cur):
@@ -72,7 +61,7 @@ def create_table_products(cur):
         cur (_cursor): Cursor from database
     """
     try:
-        console.print("Create table [bold]t_products[/bold]...", style="blue")
+        Log.info("Create table [bold]t_products[/bold]...")
         cur.execute('CREATE TABLE t_products '
                     '(product_id serial PRIMARY KEY,'
                     'product_url varchar (500) NOT NULL,'
@@ -87,11 +76,7 @@ def create_table_products(cur):
                     'product_date_updated date);'
                     )
     except Exception as err:
-        console.print(
-            "Error creating t_products:" +
-            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
-            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
-            f"\n{format(err)}", style="red bold")
+        Log.error("Error creating t_products:", err, sys)
 
 
 def create_table_prices(cur):
@@ -102,7 +87,7 @@ def create_table_prices(cur):
         cur (_cursor): Cursor from database
     """
     try:
-        console.print("Create table [bold]t_prices[/bold]...", style="blue")
+        Log.info("Create table [bold]t_prices[/bold]...")
         cur.execute('CREATE TABLE t_prices '
                     '(price_id serial PRIMARY KEY,'
                     'product_id serial,'
@@ -113,11 +98,7 @@ def create_table_prices(cur):
                     '   REFERENCES t_products(product_id))'
                     )
     except Exception as err:
-        console.print(
-            "Error creating t_prices:" +
-            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
-            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
-            f"\n{format(err)}", style="red bold")
+        Log.error("Error creating t_prices:", err, sys)
 
 
 def grant_privileges(cur, user):
@@ -128,19 +109,15 @@ def grant_privileges(cur, user):
         cur (_type_): _description_
     """
     try:
-        console.print(
-            "Grant privileges on schema [bold]public[/bold]...", style="blue")
+        Log.info("Grant privileges on schema [bold]public[/bold]...")
         cur.execute(f'GRANT ALL ON ALL TABLES IN SCHEMA public TO {user};')
-        console.print(
-            "Grant privileges in sequences on schema [bold]public[/bold]...", style="blue")
+        Log.info(
+            "Grant privileges in sequences on schema [bold]public[/bold]...")
         cur.execute(
             f'GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO {user};')
     except Exception as err:
-        console.print(
-            f"Error gratting privileges on tables for user {user}:" +
-            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
-            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
-            f"\n{format(err)}", style="red bold")
+        Log.error(
+            f"Error gratting privileges on tables for user {user}:", err, sys)
 
 
 def exec_sql_statement(sql):
@@ -154,7 +131,7 @@ def exec_sql_statement(sql):
         list[Tuple]: Rows from execute sql statement
     """
     try:
-        console.print(f"Executing sql statement: {sql}", style="blue")
+        Log.info(f"Executing sql statement: {sql}")
         conn = get_db_connection()
         cur = conn.cursor()
         cur.execute(sql)
@@ -166,21 +143,17 @@ def exec_sql_statement(sql):
 
         return result
     except Exception as err:
-        console.print(
-            "Error executing sql statement:" +
-            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
-            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
-            f"\n{format(err)}", style="red bold")
+        Log.error("Error executing sql statement:", err, sys)
 
 
 def main():
     """
     Main process to create the needed tables for the application
     """
-    console.print("[bold green]Process starting...[/bold green]")
+    Log.info("Process starting...")
 
     try:
-        console.print("Connecting with [bold]DB[/bold]...", style="blue")
+        Log.info("Connecting with [bold]DB[/bold]...")
         conn = get_db_connection()
 
         # Open a cursor to perform database operations
@@ -199,18 +172,15 @@ def main():
 
         conn.commit()
 
-        console.print("Closing connection [bold]DB[/bold]...", style="blue")
+        Log.info("Closing connection [bold]DB[/bold]...")
         cur.close()
         conn.close()
-        console.print("[bold green]Process finished succesfully[/bold green]")
+        Log.info("Process finished succesfully")
 
     except Exception as err:
-        console.print(
-            "Execution Error:" +
-            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
-            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
-            f"\n{format(err)}", style="red bold")
+        Log.error("Execution Error:", err, sys)
 
 
 if __name__ == "__main__":
+    console.rule("Primazon DB Utils")
     main()

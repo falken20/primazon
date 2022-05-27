@@ -2,9 +2,9 @@
 
 import sys
 import datetime
-from rich.console import Console
 
 from . import utils_db
+from src.logger import Log
 
 IDX_PRODUCT_ID = 0
 IDX_PRODUCT_URL = 1
@@ -17,10 +17,6 @@ IDX_PRODUCT_MIN_PRICE = 7
 IDX_PRODUCT_MAX_PRICE = 8
 IDX_PRODUCT_DATE_ADDED = 9
 IDX_PRODUCT_DATE_UPDATED = 10
-
-
-# Create console object for logs
-console = Console()
 
 
 def get_all_products():
@@ -36,11 +32,7 @@ def get_all_products():
 
         return products
     except Exception as err:
-        console.print(
-            "Error in method get_all_products:" +
-            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
-            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
-            f"\n{format(err)}", style="red bold")
+        Log.error("Error in method get_all_products:", err, sys)
         return False
 
 
@@ -60,11 +52,7 @@ def get_product(product_id):
 
         return product
     except Exception as err:
-        console.print(
-            "Error in method get_product:" +
-            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
-            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
-            f"\n{format(err)}", style="red bold")
+        Log.error("Error in method get_product:", err, sys)
         return False
 
 
@@ -96,11 +84,7 @@ def create_product(values):
 
         return True
     except Exception as err:
-        console.print(
-            "Error in method create_product:" +
-            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
-            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
-            f"\n{format(err)}", style="red bold")
+        Log.error("Error in method create_product:", err, sys)
         return False
 
 
@@ -121,11 +105,7 @@ def delete_product(product_id):
         return True
 
     except Exception as err:
-        console.print(
-            "Error in method delete_product:" +
-            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
-            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
-            f"\n{format(err)}", style="red bold")
+        Log.error("Error in method delete_product:", err, sys)
         return False
 
 
@@ -165,9 +145,5 @@ def update_product(values):
 
         return True
     except Exception as err:
-        console.print(
-            "Error in method create_product:" +
-            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
-            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
-            f"\n{format(err)}", style="red bold")
+        Log.error("Error in method create_product:", err, sys)
         return False
