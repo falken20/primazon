@@ -8,7 +8,7 @@ import json
 from selectorlib import Extractor
 from bs4 import BeautifulSoup
 
-import src.logger
+from src.logger import Log, console
 
 # Load .env file
 # load_dotenv(find_dotenv())
@@ -39,7 +39,7 @@ def get_proxies():
         set: List of free proxies
     """
     try:
-        loggear("Method get_proxies to get free proxies...", "INFO")
+        Log.info("Method get_proxies to get free proxies...")
 
         url = 'https://free-proxy-list.net/'
         headers_proxy = {
@@ -58,7 +58,7 @@ def get_proxies():
 
         return proxies
     except Exception as err:
-        loggear("Error in get_proxies method:", "ERROR", err, sys)
+        Log.error("Error in get_proxies method:", err, sys)
 
 
 def scrap_by_selectorlib(page):
@@ -72,14 +72,14 @@ def scrap_by_selectorlib(page):
         dict: product data
     """
     try:
-        loggear("Method scrap_by_selectorlib to scrap the Amazon page...", "INFO")
+        Log.info("Method scrap_by_selectorlib to scrap the Amazon page...")
         extractor = Extractor.from_yaml_file(os.path.join(
             os.path.dirname(__file__), 'selectors.yml'))
         data_product = extractor.extract(page.text)
 
         # Get only the first image, its a string dict so that it is necessary
         # to use json.loads to get a dict, after that it takes the first image
-        loggear(f"Amazon metadata product: {data_product}", "DEBUG")
+        Log.debug(f"Amazon metadata product: {data_product}")
         if data_product['images']:
             data_product['images'] = next(
                 iter(json.loads(data_product['images'])))
@@ -88,7 +88,7 @@ def scrap_by_selectorlib(page):
 
         return data_product
     except Exception as err:
-        loggear("Error in scrap_by_selectorlib method:", "ERROR", err, sys)
+        Log.error("Error in scrap_by_selectorlib method:", err, sys)
 
 
 def scrap_by_beautifulsoup(page):
@@ -102,21 +102,21 @@ def scrap_by_beautifulsoup(page):
         dict: product data
     """
     try:
-        loggear("Method scrap_by_beautifulsoup to scrap the Amazon page...", "INFO")
+        Log.info("Method scrap_by_beautifulsoup to scrap the Amazon page...")
         soup = BeautifulSoup(page.content, "html.parser")
 
-        loggear(soup.find(id="productTitle").text.strip(), "DEBUG")  # By DOM element id
+        Log.debug(soup.find(id="productTitle").text.strip())  # By DOM element id
         # By DOM element class
-        loggear(soup.find(class_="a-offscreen").text.strip(), "DEBUG")
-        loggear(soup.find(class_="a-icon-alt").text.strip(), "DEBUG")
-        loggear(soup.find(id="acrCustomerReviewText"), "DEBUG")
-        loggear(soup.find(class_="a-dynamic-image"), "DEBUG")
+        Log.debug(soup.find(class_="a-offscreen").text.strip())
+        Log.debug(soup.find(class_="a-icon-alt").text.strip())
+        Log.debug(soup.find(id="acrCustomerReviewText"))
+        Log.debug(soup.find(class_="a-dynamic-image"))
 
         return True
         # ...continue
 
     except Exception as err:
-        loggear("Error in scrap_by_beautifulsoup method:", "ERROR", err, sys)
+        Log.error("Error in scrap_by_beautifulsoup method:", err, sys)
 
 
 def scrap_web(url):
@@ -127,49 +127,49 @@ def scrap_web(url):
         url (str): url web to scrap
     """
     try:
-        loggear(f"Method scrap_web to scrap the url: {url}", "INFO")
+        Log.info(f"Method scrap_web to scrap the url: {url}")
 
         proxies = get_proxies() if os.environ['PROXY'] in ["Y", "y"] else None
         if proxies:
-            loggear(
-                f"Use proxy to access to Amazon: {proxies[0]}", "DEBUG")
+            Log.debug(
+                f"Use proxy to access to Amazon: {proxies[0]}")
             page = requests.get(url, headers=headers, proxies={
                                 "http": proxies[0], "https": proxies[0]})
         else:
-            loggear("Don't use proxy to access to Amazon", "DEBUG")
+            Log.debug("Don't use proxy to access to Amazon")
             page = requests.get(url, headers=headers)
 
         if page.status_code > 500:
-            loggear("Page %s must have been blocked by Amazon as the status code was %d" % (
-                url, page.status_code), "DEBUG")
+            Log.debug("Page %s must have been blocked by Amazon as the status code was %d" % (
+                url, page.status_code))
             return None
         else:
             if "To discuss automated access to Amazon data please contact api-services-support@amazon.com" in page.text:
                 raise Exception(
                     "Page was blocked by Amazon. Please try using better proxies or try later")
 
-        loggear(f"Status code page: {page.status_code}", "DEBUG")
+        Log.debug(f"Status code page: {page.status_code}")
         data_product = scrap_by_selectorlib(page)
         scrap_by_beautifulsoup(page)
 
-        loggear("Process scrap_web finished", "INFO")
+        Log.info("Process scrap_web finished")
 
         return data_product
 
     except Exception as err:
-        loggear("Error scrapping url web:", "ERROR", err, sys)
+        Log.error("Error scrapping url web:", err, sys)
 
 
 if __name__ == "__main__":
-    loggear("Starting primazon utils...")
-    loggear("Select option:")
-    loggear("1. Scrap url")
-    loggear("2. Exit")
+    console.rule("Primazon utils...")
+    Log.info("Select option:")
+    Log.info("1. Scrap url")
+    Log.info("2. Exit")
     option = input()
     if option == "1":
         url = str(sys.argv[1]) if len(sys.argv) > 1 else None
-        loggear("Please entry the url to scrap:")
+        Log.info("Please entry the url to scrap:")
         url = input() if not url else ""
         scrap_web(url)
 
-    loggear("Primazon utils finished")
+    Log.info("Primazon utils finished")

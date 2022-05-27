@@ -3,7 +3,7 @@
 import sys
 
 from src import utils_db
-from src.logger import loggear
+from src.logger import Log
 
 
 def get_prices_product(product_id):
@@ -21,7 +21,7 @@ def get_prices_product(product_id):
 
         return product_prices
     except Exception as err:
-        loggear("Error in get_prices_product method:", "ERROR", err, sys)
+        Log.error("Error in get_prices_product method:", err, sys)
 
 
 def insert_product_price(product_id, product_price):
@@ -39,4 +39,4 @@ def insert_product_price(product_id, product_price):
         utils_db.exec_sql_statement(sql)
 
     except Exception as err:
-        loggear("Error in insert_product_price method:", "ERROR", err, sys)
+        Log.error("Error in insert_product_price method:", err, sys)
