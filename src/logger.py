@@ -1,6 +1,5 @@
 import sys
 import os
-from turtle import st
 from rich.console import Console
 from rich.style import Style
 from datetime import datetime
@@ -22,10 +21,10 @@ class Log():
     def debug(message):
         try:
             time = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+            level = Log.debug.__name__.upper()
 
-            if Log.debug.__name__.upper() in LEVEL_LOG.upper():
-                console.print(time, Log.debug.__name__.upper(),
-                              message, style=style_DEBUG)
+            if level in LEVEL_LOG.upper():
+                console.print(time, level, message, style=style_DEBUG)
 
         except Exception as err:
             Log.error("Error to print log", err, sys)
@@ -33,10 +32,10 @@ class Log():
     def info(message):
         try:
             time = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+            level = Log.info.__name__.upper()
 
-            if __name__.upper() in LEVEL_LOG.upper():
-                console.print(time, Log.debug.__name__.upper(),
-                              message, style=style_INFO)
+            if level in LEVEL_LOG.upper():
+                console.print(time, level, message, style=style_INFO)
 
         except Exception as err:
             Log.error("Error to print log", err, sys)
@@ -44,10 +43,10 @@ class Log():
     def warning(message):
         try:
             time = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+            level = Log.warning.__name__.upper()
 
-            if __name__.upper() in LEVEL_LOG.upper():
-                console.print(time, Log.debug.__name__.upper(),
-                              message, style=style_WARNING)
+            if level in LEVEL_LOG.upper():
+                console.print(time, level, message, style=style_WARNING)
 
         except Exception as err:
             Log.error("Error to print log", err, sys)
@@ -64,10 +63,11 @@ class Log():
         """
         try:
             time = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+            level = Log.error.__name__.upper()
 
-            if __name__.upper() in LEVEL_LOG.upper():
+            if level in LEVEL_LOG.upper():
                 console.rule("ERROR")
-                console.print(time, Log.debug.__name__.upper(), message,
+                console.print(time, level, message,
                               f"\nLine: {sys.exc_info()[2].tb_lineno} {type(err).__name__} ",
                               f"\nMethod: {sys.exc_info()[2].tb_frame.f_code.co_name} ",
                               f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} ",

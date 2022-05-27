@@ -12,7 +12,7 @@ import sys
 import psycopg2
 from dotenv import load_dotenv, find_dotenv
 
-from src.logger import loggear
+from src.logger import Log, console
 
 # Load .env file
 load_dotenv(find_dotenv())
@@ -33,7 +33,7 @@ def get_db_connection():
             user=os.environ['DB_USERNAME'],
             password=os.environ['DB_PASSWORD'])
     except Exception as err:
-        loggear("Error getting connection to DB:", "ERROR", err, sys)
+        Log.error("Error getting connection to DB:", err, sys)
         return False
 
 
@@ -45,13 +45,12 @@ def drop_tables(cur):
         cur (_cursor): Cursor from database
     """
     try:
-        loggear("Drop table [bold]t_prices[/bold]...", "INFO")
+        Log.info("Drop table [bold]t_prices[/bold]...")
         cur.execute('DROP TABLE IF EXISTS t_prices;')
-        loggear("Drop table [bold]t_products[/bold]...", "INFO")
+        Log.info("Drop table [bold]t_products[/bold]...")
         cur.execute('DROP TABLE IF EXISTS t_products;')
     except Exception as err:
-        loggear("Error dropping tables from DB:", "ERROR", err, sys)
-
+        Log.error("Error dropping tables from DB:", err, sys)
 
 
 def create_table_products(cur):
@@ -62,7 +61,7 @@ def create_table_products(cur):
         cur (_cursor): Cursor from database
     """
     try:
-        loggear("Create table [bold]t_products[/bold]...", "INFO")
+        Log.info("Create table [bold]t_products[/bold]...")
         cur.execute('CREATE TABLE t_products '
                     '(product_id serial PRIMARY KEY,'
                     'product_url varchar (500) NOT NULL,'
@@ -77,7 +76,8 @@ def create_table_products(cur):
                     'product_date_updated date);'
                     )
     except Exception as err:
-        loggear("Error creating t_products:", "ERROR", err, sys)
+        Log.error("Error creating t_products:", err, sys)
+
 
 def create_table_prices(cur):
     """
@@ -87,7 +87,7 @@ def create_table_prices(cur):
         cur (_cursor): Cursor from database
     """
     try:
-        loggear("Create table [bold]t_prices[/bold]...", "INFO")
+        Log.info("Create table [bold]t_prices[/bold]...")
         cur.execute('CREATE TABLE t_prices '
                     '(price_id serial PRIMARY KEY,'
                     'product_id serial,'
@@ -98,7 +98,7 @@ def create_table_prices(cur):
                     '   REFERENCES t_products(product_id))'
                     )
     except Exception as err:
-        loggear("Error creating t_prices:", "ERROR", err, sys)
+        Log.error("Error creating t_prices:", err, sys)
 
 
 def grant_privileges(cur, user):
@@ -109,16 +109,15 @@ def grant_privileges(cur, user):
         cur (_type_): _description_
     """
     try:
-        loggear(
-            "Grant privileges on schema [bold]public[/bold]...", "INFO")
+        Log.info("Grant privileges on schema [bold]public[/bold]...")
         cur.execute(f'GRANT ALL ON ALL TABLES IN SCHEMA public TO {user};')
-        loggear(
-            "Grant privileges in sequences on schema [bold]public[/bold]...", "INFO")
+        Log.info(
+            "Grant privileges in sequences on schema [bold]public[/bold]...")
         cur.execute(
             f'GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO {user};')
     except Exception as err:
-        loggear(
-            f"Error gratting privileges on tables for user {user}:", "ERROR", err, sys)
+        Log.error(
+            f"Error gratting privileges on tables for user {user}:", err, sys)
 
 
 def exec_sql_statement(sql):
@@ -132,7 +131,7 @@ def exec_sql_statement(sql):
         list[Tuple]: Rows from execute sql statement
     """
     try:
-        loggear(f"Executing sql statement: {sql}", "INFO")
+        Log.info(f"Executing sql statement: {sql}")
         conn = get_db_connection()
         cur = conn.cursor()
         cur.execute(sql)
@@ -144,17 +143,17 @@ def exec_sql_statement(sql):
 
         return result
     except Exception as err:
-        loggear("Error executing sql statement:", "ERROR", err, sys)
+        Log.error("Error executing sql statement:", err, sys)
 
 
 def main():
     """
     Main process to create the needed tables for the application
     """
-    loggear("Process starting...", "INFO")
+    Log.info("Process starting...")
 
     try:
-        loggear("Connecting with [bold]DB[/bold]...", "INFO")
+        Log.info("Connecting with [bold]DB[/bold]...")
         conn = get_db_connection()
 
         # Open a cursor to perform database operations
@@ -173,14 +172,15 @@ def main():
 
         conn.commit()
 
-        loggear("Closing connection [bold]DB[/bold]...", "INFO")
+        Log.info("Closing connection [bold]DB[/bold]...")
         cur.close()
         conn.close()
-        loggear("Process finished succesfully", "INFO")
+        Log.info("Process finished succesfully")
 
     except Exception as err:
-        loggear("Execution Error:", "ERROR", err, sys)
+        Log.error("Execution Error:", err, sys)
 
 
 if __name__ == "__main__":
+    console.rule("Primazon DB Utils")
     main()

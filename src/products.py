@@ -4,7 +4,7 @@ import sys
 import datetime
 
 from . import utils_db
-from src.logger import loggear
+from src.logger import Log
 
 IDX_PRODUCT_ID = 0
 IDX_PRODUCT_URL = 1
@@ -32,7 +32,7 @@ def get_all_products():
 
         return products
     except Exception as err:
-        loggear("Error in method get_all_products:", "ERROR", err, sys)
+        Log.error("Error in method get_all_products:", err, sys)
         return False
 
 
@@ -52,7 +52,7 @@ def get_product(product_id):
 
         return product
     except Exception as err:
-        loggear("Error in method get_product:", "ERROR", err, sys)
+        Log.error("Error in method get_product:", err, sys)
         return False
 
 
@@ -84,7 +84,7 @@ def create_product(values):
 
         return True
     except Exception as err:
-        loggear("Error in method create_product:", "ERROR", err, sys)
+        Log.error("Error in method create_product:", err, sys)
         return False
 
 
@@ -105,7 +105,7 @@ def delete_product(product_id):
         return True
 
     except Exception as err:
-        loggear("Error in method delete_product:", "ERROR", err, sys)
+        Log.error("Error in method delete_product:", err, sys)
         return False
 
 
@@ -145,5 +145,5 @@ def update_product(values):
 
         return True
     except Exception as err:
-        loggear("Error in method create_product:", "ERROR", err, sys)
+        Log.error("Error in method create_product:", err, sys)
         return False

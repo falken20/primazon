@@ -4,12 +4,11 @@
 # With this file it is no neccesary to use prices.py and products.py
 
 import datetime
-from re import L
 import sys
 from sqlalchemy.sql import func
 from flask_sqlalchemy import SQLAlchemy
 
-import src.logger
+from src.logger import Log
 
 # Create db object
 db = SQLAlchemy()
@@ -144,23 +143,23 @@ def init_db():
     """
     Main process to create the needed tables for the application
     """
-    loggear("Init DB process starting...", "INFO")
+    Log.info("Init DB process starting...")
 
     try:
         if input("Could you drop the tables if they exist(y/n)? ") in ["Y", "y"]:
             db.drop_all()
-            loggear("Tables dropped", level="INFO")
+            Log.info("Tables dropped")
 
         if input("Could you create the tables(y/n)? ") in ["Y", "y"]:
-            loggear("Creating tables...", level="INFO")
+            Log.info("Creating tables...")
             db.create_all()
 
         db.session.commit()
 
-        loggear("Process finished succesfully", level="INFO")
+        Log.info("Process finished succesfully")
 
     except Exception as err:
-        loggear("Execution Error in init_db:", level="ERROR", err=err, sys=sys)
+        Log.error("Execution Error in init_db:", err=err, sys=sys)
 
 
 if __name__ == '__main__':
