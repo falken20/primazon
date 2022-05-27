@@ -1,12 +1,9 @@
 # by Richi Rod AKA @richionline / falken20
 
 import sys
-from rich.console import Console
 
 from src import utils_db
-
-# Create console object for logs
-console = Console()
+from src.logger import Log
 
 
 def get_prices_product(product_id):
@@ -24,11 +21,7 @@ def get_prices_product(product_id):
 
         return product_prices
     except Exception as err:
-        console.print(
-            "Error in get_prices_product method:" +
-            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
-            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
-            f"\n{format(err)}", style="red bold")
+        Log.error("Error in get_prices_product method:", err, sys)
 
 
 def insert_product_price(product_id, product_price):
@@ -46,8 +39,4 @@ def insert_product_price(product_id, product_price):
         utils_db.exec_sql_statement(sql)
 
     except Exception as err:
-        console.print(
-            "Error in insert_product_price method:" +
-            f"\nLine {sys.exc_info()[2].tb_lineno} {type(err).__name__} " +
-            f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} " +
-            f"\n{format(err)}", style="red bold")
+        Log.error("Error in insert_product_price method:", err, sys)
