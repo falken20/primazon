@@ -18,7 +18,8 @@ app = Flask(__name__, template_folder='../docs/templates',
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 # Set the database params for SQLAlchemy ORM library
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL'].replace("://", "ql://", 1)
+#app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 # Secret key for creating session coockie. It has to be different for each user
 app.secret_key = os.urandom(24)
