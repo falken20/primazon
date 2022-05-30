@@ -28,7 +28,7 @@ class Product(db.Model):
     product_min_price = db.Column(db.Float)
     product_max_price = db.Column(db.Float)
     product_date_added = db.Column(db.Date, default=func.now())
-    product_date_update = db.Column(db.Date)
+    product_date_updated = db.Column(db.Date)
 
     product_prices = db.relationship('Price')
 
@@ -37,7 +37,7 @@ class Product(db.Model):
 
     @staticmethod
     def get_all_products():
-        return Product.query.order_by(Product.product_date_update.desc(), Product.product_id).all()
+        return Product.query.order_by(Product.product_date_updated.desc(), Product.product_id).all()
 
     @staticmethod
     def get_product(id):
@@ -75,7 +75,7 @@ class Product(db.Model):
     def update_product(values):
         product_to_update = Product.get_product(values.get('product_id'))
 
-        product_to_update.product_date_update = datetime.datetime.now()
+        product_to_update.product_date_updated = datetime.datetime.now()
         product_to_update.product_url = values.get('product_url')
         product_to_update.product_desc = values.get('product_desc')
         product_to_update.product_url_photo = values.get('product_url_photo')
