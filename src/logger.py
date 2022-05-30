@@ -76,15 +76,3 @@ class Log():
 
         except Exception as err:
             Log.error("Error to print log", err, sys)
-
-
-"""
-import logging
-
-FORMAT = '%(asctime)s %(levelname)s %(lineno)d %(filename)s %(funcName)s: %(message)s'
-logging.basicConfig(level=logging.INFO, format=FORMAT)
-
-
-def loggear_logging(message="", level="INFO"):
-    logging.info(message, exc_info=True)
-"""
