@@ -12,7 +12,7 @@ requests = "*"
 selectorlib = ">=0.16.0"
 beautifulsoup4 = "*"
 gunicorn = "==20.0.4" # For Heroku
-flask-sqlalchemy = "*"
+flask-sqlalchemy = "<1.4.0"
 
 [dev-packages]
 coverage = "*"
