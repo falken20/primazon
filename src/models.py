@@ -1,14 +1,26 @@
 # by Richi Rod AKA @richionline / falken20
 
+# ######################################################################
 # This file is to set all the db models and use the ORM flask_sqlalchemy
 # With this file it is no neccesary to use prices.py and products.py
+# ######################################################################
+
 
 import datetime
-import sys
+import os
 from sqlalchemy.sql import func
 from flask_sqlalchemy import SQLAlchemy
+from flask import Flask
+from dotenv import load_dotenv, find_dotenv
 
-from src.logger import Log
+#from src.logger import Log
+import logging
+
+FORMAT = '%(asctime)s %(levelname)s %(lineno)d %(filename)s %(funcName)s: %(message)s'
+logging.basicConfig(level=logging.INFO, format=FORMAT)
+
+# Load .env file
+load_dotenv(find_dotenv())
 
 # Create db object
 db = SQLAlchemy()
@@ -139,28 +151,35 @@ class Price(db.Model):
         db.session.commit()
 
 
-def init_db():
+def init_db(app):
     """
     Main process to create the needed tables for the application
     """
-    Log.info("Init DB process starting...")
+    logging.info("Init DB process starting...")
 
     try:
         if input("Could you drop the tables if they exist(y/n)? ") in ["Y", "y"]:
-            db.drop_all()
-            Log.info("Tables dropped")
+            with app.app_context():
+                db.drop_all()
+            logging.info("Tables dropped")
 
         if input("Could you create the tables(y/n)? ") in ["Y", "y"]:
-            Log.info("Creating tables...")
-            db.create_all()
+            logging.info("Creating tables...")
+            with app.app_context():
+                db.create_all()
 
-        db.session.commit()
+        with app.app_context():
+            db.session.commit()
 
-        Log.info("Process finished succesfully")
+        logging.info("Process finished succesfully")
 
     except Exception as err:
-        Log.error("Execution Error in init_db:", err=err, sys=sys)
+        logging.error(f"Execution Error in init_db: {err}", exc_info=True)
 
 
 if __name__ == '__main__':
-    init_db()
+    logging.info("Preparing app vars...")
+    app = Flask(__name__)
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL'].replace("://", "ql://", 1)
+    db.init_app(app)
+    init_db(app)
