@@ -17,8 +17,12 @@ app = Flask(__name__, template_folder='../docs/templates',
 # Set this var to True to be able to make any web change and take the changes with refresh
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
-# Set the database params for SQLAlchemy ORM library
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+# Set the database params for SQLAlchemy ORM library. This is due to a change in the sqlalchemy
+# library. It was an announced deprecation in the changing of name postgres to postgresql.
+# In Heroku you cant change the value of this environment var to postgresql
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL'].replace("://", "ql://", 1)
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 # Secret key for creating session coockie. It has to be different for each user
 app.secret_key = os.urandom(24)

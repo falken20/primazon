@@ -1,14 +1,26 @@
 # by Richi Rod AKA @richionline / falken20
 
+# ######################################################################
 # This file is to set all the db models and use the ORM flask_sqlalchemy
 # With this file it is no neccesary to use prices.py and products.py
+# ######################################################################
+
 
 import datetime
-import sys
+import os
 from sqlalchemy.sql import func
 from flask_sqlalchemy import SQLAlchemy
+from flask import Flask
+from dotenv import load_dotenv, find_dotenv
 
-from src.logger import Log
+#from src.logger import Log
+import logging
+
+FORMAT = '%(asctime)s %(levelname)s %(lineno)d %(filename)s %(funcName)s: %(message)s'
+logging.basicConfig(level=logging.INFO, format=FORMAT)
+
+# Load .env file
+load_dotenv(find_dotenv())
 
 # Create db object
 db = SQLAlchemy()
@@ -28,7 +40,7 @@ class Product(db.Model):
     product_min_price = db.Column(db.Float)
     product_max_price = db.Column(db.Float)
     product_date_added = db.Column(db.Date, default=func.now())
-    product_date_update = db.Column(db.Date)
+    product_date_updated = db.Column(db.Date)
 
     product_prices = db.relationship('Price')
 
@@ -37,7 +49,7 @@ class Product(db.Model):
 
     @staticmethod
     def get_all_products():
-        return Product.query.order_by(Product.product_date_update.desc(), Product.product_id).all()
+        return Product.query.order_by(Product.product_date_updated.desc(), Product.product_id).all()
 
     @staticmethod
     def get_product(id):
@@ -62,6 +74,7 @@ class Product(db.Model):
                 'product_price') if values.get('product_price') else 0,
             product_max_price=values.get(
                 'product_price') if values.get('product_price') else 0,
+            product_date_updated = datetime.datetime.now(),
         )
         db.session.add(new_product)
         db.session.commit()
@@ -75,7 +88,7 @@ class Product(db.Model):
     def update_product(values):
         product_to_update = Product.get_product(values.get('product_id'))
 
-        product_to_update.product_date_update = datetime.datetime.now()
+        product_to_update.product_date_updated = datetime.datetime.now()
         product_to_update.product_url = values.get('product_url')
         product_to_update.product_desc = values.get('product_desc')
         product_to_update.product_url_photo = values.get('product_url_photo')
@@ -139,28 +152,35 @@ class Price(db.Model):
         db.session.commit()
 
 
-def init_db():
+def init_db(app):
     """
     Main process to create the needed tables for the application
     """
-    Log.info("Init DB process starting...")
+    logging.info("Init DB process starting...")
 
     try:
         if input("Could you drop the tables if they exist(y/n)? ") in ["Y", "y"]:
-            db.drop_all()
-            Log.info("Tables dropped")
+            with app.app_context():
+                db.drop_all()
+            logging.info("Tables dropped")
 
         if input("Could you create the tables(y/n)? ") in ["Y", "y"]:
-            Log.info("Creating tables...")
-            db.create_all()
+            logging.info("Creating tables...")
+            with app.app_context():
+                db.create_all()
 
-        db.session.commit()
+        with app.app_context():
+            db.session.commit()
 
-        Log.info("Process finished succesfully")
+        logging.info("Process finished succesfully")
 
     except Exception as err:
-        Log.error("Execution Error in init_db:", err=err, sys=sys)
+        logging.error(f"Execution Error in init_db: {err}", exc_info=True)
 
 
 if __name__ == '__main__':
-    init_db()
+    logging.info("Preparing app vars...")
+    app = Flask(__name__)
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL'].replace("://", "ql://", 1)
+    db.init_app(app)
+    init_db(app)
