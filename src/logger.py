@@ -3,6 +3,10 @@ import os
 from rich.console import Console
 from rich.style import Style
 from datetime import datetime
+from dotenv import load_dotenv, find_dotenv
+
+# Load .env file
+load_dotenv(find_dotenv())
 
 # Create console object for logs
 console = Console()

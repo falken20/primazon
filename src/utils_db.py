@@ -1,6 +1,8 @@
 # by Richi Rod AKA @richionline / falken20
 
+# ####################################################
 # Functions for use the database without a ORM library
+# ####################################################
 
 # Create user and grant privileges, it should be done before in the terminal, important the ';' at the end
 # CREATE ROLE user LOGIN PASSWORD password;
@@ -91,7 +93,7 @@ def create_table_prices(cur):
         logging.info("Create table t_prices...")
         cur.execute('CREATE TABLE t_prices '
                     '(price_id serial PRIMARY KEY,'
-                    'product_id serial,'
+                    'product_id serial REFERENCES t_products (product_id) ON DELETE CASCADE,'
                     'product_price float NOT NULL,'
                     'price_date_added date DEFAULT CURRENT_TIMESTAMP,'
                     'CONSTRAINT fk_products'
@@ -184,4 +186,7 @@ def main():
 
 if __name__ == "__main__":
     logging.info("Primazon DB Utils")
+    logging.warning("*****************************************************************")
+    logging.warning("Dont use this utils because is when you dont manage a ORM library")
+    logging.warning("*****************************************************************")
     main()
