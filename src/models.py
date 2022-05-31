@@ -74,6 +74,7 @@ class Product(db.Model):
                 'product_price') if values.get('product_price') else 0,
             product_max_price=values.get(
                 'product_price') if values.get('product_price') else 0,
+            product_date_updated = datetime.datetime.now(),
         )
         db.session.add(new_product)
         db.session.commit()
