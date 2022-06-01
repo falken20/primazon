@@ -44,7 +44,9 @@ def index():
 @app.route('/about/')
 def about():
     Log.info("Method to show [bold]about[/bold] page...")
-    return render_template('about.html')
+    from src import __version__, __author__, __license__
+
+    return render_template('about.html', version=__version__, author=__author__, license=__license__)
 
 
 @app.route('/products/add/', methods=('GET', 'POST'))
