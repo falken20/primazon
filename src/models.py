@@ -13,7 +13,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 from dotenv import load_dotenv, find_dotenv
 
-#from src.logger import Log
+# from src.logger import Log
 import logging
 
 FORMAT = '%(asctime)s %(levelname)s %(lineno)d %(filename)s %(funcName)s: %(message)s'
@@ -74,7 +74,7 @@ class Product(db.Model):
                 'product_price') if values.get('product_price') else 0,
             product_max_price=values.get(
                 'product_price') if values.get('product_price') else 0,
-            product_date_updated = datetime.datetime.now(),
+            product_date_updated=datetime.datetime.now(),
         )
         db.session.add(new_product)
         db.session.commit()
