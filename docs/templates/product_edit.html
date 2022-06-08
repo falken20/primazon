@@ -15,7 +15,7 @@
         <input type="text" class="form-control" id="product_url" name="product_url" placeholder="Product URL" value="{{ product.product_url }}">
       </div>      
       <div class="form-group">
-        <a class="btn btn-warning btn-sm">
+        <a class="btn btn-warning btn-sm" href="{{ url_for('refresh_data', product_id=product.product_id) }}">
           <i class="bi bi-arrow-clockwise"></i>
           Refresh data from <img src="/static/img/amazon.jpeg" height="20" /> 
         </a>
