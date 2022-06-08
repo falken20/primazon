@@ -20,7 +20,8 @@ app.config['TEMPLATES_AUTO_RELOAD'] = True
 # Set the database params for SQLAlchemy ORM library. This is due to a change in the sqlalchemy
 # library. It was an announced deprecation in the changing of name postgres to postgresql.
 # In Heroku you cant change the value of this environment var to postgresql
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL'].replace("://", "ql://", 1)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL'].replace(
+    "://", "ql://", 1)
 # app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
@@ -32,13 +33,15 @@ db.init_app(app)
 
 @app.route('/')
 @app.route('/home')
-def index():
+@app.route('/<message>')
+@app.route('/home/<message>')
+def index(message=""):
     Log.info("Method to show index page...")
     # Get all the products
     # NO_ORM all_products = products.get_all_products()
     all_products = Product.get_all_products()
 
-    return render_template('product_list.html', products=all_products)
+    return render_template('product_list.html', products=all_products, message=message)
 
 
 @app.route('/about/')
@@ -56,31 +59,34 @@ def create_product():
         if request.method == 'POST':
             # NO_ORM products.create_product(request.form)
             Product.create_product(request.form)
-            return redirect(url_for('index'))
+            return redirect(url_for('index', message="Product created sucesfully"))
 
         return render_template('product_form.html')
 
     except Exception as err:
         Log.error("Error showing create product page:", err, sys)
+        return redirect(url_for('index', message="Error showing create product page"))
 
 
 @app.route('/products/delete/<int:product_id>')
 def delete_product(product_id):
     try:
-        Log.info(f"Method to [bold]delete product[/bold] with id: {product_id}")
+        Log.info(
+            f"Method to [bold]delete product[/bold] with id: {product_id}")
         # NO_ORM products.delete_product(product_id)
         Product.delete_product(product_id)
 
-        return redirect(url_for('index'))
+        return redirect(url_for('index', message="Product deleted sucesfully"))
 
     except Exception as err:
         Log.error("Error in delete_product method:", err, sys)
+        return redirect(url_for('index', message="Error in delete product"))
 
 
 @app.route('/products/edit/<int:product_id>')
 def edit_product(product_id):
     try:
-        Log.info(f"Method to [bold]edit product[/bold] with id: {product_id}")
+        Log.info(f"Method to show screen to [bold]edit product[/bold] with id: {product_id}")
         # NO_ORM product = products.get_product(product_id)
         product = Product.get_product(product_id)
 
@@ -88,6 +94,7 @@ def edit_product(product_id):
 
     except Exception as err:
         Log.error("Error in edit_product method:", err, sys)
+        return redirect(url_for('index', message="Error in show edit product page"))
 
 
 @app.route('/products/update', methods=["POST"])
@@ -97,10 +104,11 @@ def update_product():
         # NO_ORM products.update_product(request.form)
         Product.update_product(request.form)
 
-        return redirect(url_for('index'))
+        return redirect(url_for('index', message="Product updated sucesfully"))
 
     except Exception as err:
         Log.error("Error in edit_product method:", err, sys)
+        return redirect(url_for('index', message="Error in update product"))
 
 
 def update_product_from_amazon(product, amazon_data):
@@ -162,7 +170,8 @@ def update_product_from_amazon(product, amazon_data):
 @app.route('/product/refresh/<int:product_id>')
 def refresh_data(product_id):
     try:
-        Log.info(f"Method to [bold]refresh data product[/bold] with id: {product_id}")
+        Log.info(
+            f"Method to [bold]refresh data product[/bold] with id: {product_id}")
 
         # NO_ORM product = products.get_product(product_id)[0]
         product = Product.get_product(product_id)
@@ -174,25 +183,29 @@ def refresh_data(product_id):
         Log.debug(f"Getting [bold]Amazon[/bold] data: {amazon_data}")
 
         if amazon_data is None:
-            Log.warning(f"Impossible to get data from Amazon for the product url '{product.product_url}'")
+            Log.warning(
+                f"Impossible to get data from Amazon for the product url '{product.product_url}'")
         else:
             product_to_update = update_product_from_amazon(
                 product, amazon_data)
             # NO_ORM products.update_product(product_to_update)
             Product.update_product(product_to_update)
-            Log.info(f"Product with id {product.product_id} succesfully updated")
+            Log.info(
+                f"Product with id {product.product_id} succesfully updated")
 
         return redirect(url_for('index'))
         # return redirect(url_for('edit_product', product_id=product_id))
 
     except Exception as err:
         Log.error("Error in refresh_data method:", err, sys)
+        return redirect(url_for('index', message="Error in refresh data from Amazon"))
 
 
 @app.route('/run_process')
 def run_process():
     try:
-        Log.info("Process to [bold]refresh [bold]ALL[/bold] data product[/bold]")
+        Log.info(
+            "Process to [bold]refresh [bold]ALL[/bold] data product[/bold]")
 
         # NO_ORM all_products = products.get_all_products()
         all_products = Product.get_all_products()
@@ -203,17 +216,21 @@ def run_process():
             Log.debug(f"Getting [bold]Amazon[/bold] data: {amazon_data}")
 
             if amazon_data is None:
-                Log.warning(f"Impossible to get data from Amazon for the product url '{product.product_url}'")
+                Log.warning(
+                    f"Impossible to get data from Amazon for the product url '{product.product_url}'")
             else:
                 product_to_update = update_product_from_amazon(
                     product, amazon_data)
                 # NO_ORM products.update_product(product_to_update)
                 Product.update_product(product_to_update)
-                Log.debug(f"Product with id {product.product_id} succesfully updated")
+                Log.debug(
+                    f"Product with id {product.product_id} succesfully updated")
 
-        Log.info("Process to [bold]refresh [bold]ALL[/bold] data product[/bold] finished succesfully")
+        Log.info(
+            "Process to [bold]refresh [bold]ALL[/bold] data product[/bold] finished succesfully")
 
         return redirect(url_for('index'))
 
     except Exception as err:
         Log.error("Error in run_process method:", err, sys)
+        return redirect(url_for('index', message="Error in cron to get data from Amazon"))
