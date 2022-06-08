@@ -158,6 +158,7 @@ def scrap_web(url):
 
     except Exception as err:
         Log.error("Error scrapping url web:", err, sys)
+        raise Exception(err)
 
 
 if __name__ == "__main__":
