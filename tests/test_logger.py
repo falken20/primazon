@@ -1,4 +1,3 @@
-import os
 from io import StringIO
 import sys
 from src import logger
@@ -84,21 +83,28 @@ def test_warning_no_trace():
 def test_error():
     logger.LEVEL_LOG = "['ERROR']"
     trace = "Test Error"
-    err = pytest.raises(Exception)
 
-    captured_output = redirect_stdout()
-    logger.Log.error(trace, err, sys)
-    redirect_reset()
+    try:
+        raise(Exception)
 
-    assert trace in captured_output.getvalue()
+    except Exception as err:
+        captured_output = redirect_stdout()
+        logger.Log.error(trace, err, sys)
+        redirect_reset()
+
+        assert trace in captured_output.getvalue()
 
 
 def test_error_no_trace():
     logger.LEVEL_LOG = "[]"
     trace = "Test Error"
 
-    captured_output = redirect_stdout()
-    logger.Log.error(trace)
-    redirect_reset()
+    try:
+        raise(Exception)
 
-    assert trace not in captured_output.getvalue()
+    except Exception as err:
+        captured_output = redirect_stdout()
+        logger.Log.error(trace, err, sys)
+        redirect_reset()
+
+        assert trace not in captured_output.getvalue()
