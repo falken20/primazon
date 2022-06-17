@@ -83,6 +83,8 @@ class Product(db.Model):
         if float(new_product.product_price) != 0:
             Price.insert_product_price(
                 new_product.product_id, new_product.product_price)
+        
+        return new_product
 
     @staticmethod
     def update_product(values):
