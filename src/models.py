@@ -152,6 +152,7 @@ class Price(db.Model):
         new_price = Price(product_id=product_id, product_price=product_price)
         db.session.add(new_price)
         db.session.commit()
+        return new_price
 
 
 def init_db(app):
