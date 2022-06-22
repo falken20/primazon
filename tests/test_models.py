@@ -93,16 +93,17 @@ class TestPrice(unittest.TestCase):
             db.drop_all()
 
     def test_repr(self):
-        self.assertIn("Product price:", repr(Price(product_id="1", product_price=1)))
+        self.assertIn("Product price:", repr(Price(product_id="1", product_price=10)))
 
     def test_get_prices_product(self):
-        price = Price(product_id="1", product_price=1)
+        price = Price(product_id="1", product_price=10)
         prices = Price.get_prices_product(price.product_id)
-        self.assertEqual(1, 1)
+        print(prices)
+        self.assertEqual(1, prices[0].product_price)
 
     def test_insert_product_price(self):
-        price = Price.insert_product_price(product_id="1", product_price=1)
-        self.assertEqual(1, price.product_price)
+        price = Price.insert_product_price(product_id="1", product_price=10)
+        self.assertIn(price, db.session)
 
 
 
