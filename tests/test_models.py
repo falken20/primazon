@@ -3,10 +3,10 @@ from flask import Flask
 
 from src.models import Price, Product, db
 
+TEST_PRODUCT = {"product_url": "url", "product_price": 1}
+TEST_PRODUCT_UPDATE = {"product_id": 1, "product_price": 10}
 
 class TestProduct(unittest.TestCase):
-
-    TEST_PRODUCT = {"product_url": "url", "product_price": 1}
 
     def create_app(self):
         app = Flask(__name__)
@@ -36,31 +36,33 @@ class TestProduct(unittest.TestCase):
             db.drop_all()
 
     def test_repr(self):
-        self.assertIn("ID:", repr(Product.create_product(self.TEST_PRODUCT)))
+        self.assertIn("ID:", repr(Product.create_product(TEST_PRODUCT)))
 
     def test_create_product(self):
-        product = Product.create_product(self.TEST_PRODUCT)
+        product = Product.create_product(TEST_PRODUCT)
         db.session.add(product)
         db.session.commit()
         assert product in db.session
 
     def test_get_product(self):
-        product = Product.create_product(self.TEST_PRODUCT)
+        product = Product.create_product(TEST_PRODUCT)
         assert product == Product.get_product(product.product_id)
 
     def test_get_all_products(self):
-        product = Product.create_product(self.TEST_PRODUCT)
-        product = Product.create_product(self.TEST_PRODUCT)
+        product = Product.create_product(TEST_PRODUCT)
+        product = Product.create_product(TEST_PRODUCT)
         assert 2 == len(Product.get_all_products())
 
     def test_delete_product(self):
-        product = Product.create_product(self.TEST_PRODUCT)
+        product = Product.create_product(TEST_PRODUCT)
         product.delete_product(product.product_id)
         self.assertNotIn(product, db.session)
 
     def test_update_product(self):
-        product = Product.create_product(self.TEST_PRODUCT)
-        self.assertFalse(False)
+        product = Product.create_product(TEST_PRODUCT)
+        print(product)
+        product.update_product(TEST_PRODUCT_UPDATE)
+        self.assertIn(product, db.session)
 
 
 class TestPrice(unittest.TestCase):
@@ -96,15 +98,13 @@ class TestPrice(unittest.TestCase):
         self.assertIn("Product price:", repr(Price(product_id="1", product_price=10)))
 
     def test_get_prices_product(self):
-        price = Price(product_id="1", product_price=10)
-        prices = Price.get_prices_product(price.product_id)
-        print(prices)
-        self.assertEqual(1, prices[0].product_price)
+        product = Product.create_product(TEST_PRODUCT)
+        prices = Price.get_prices_product(product.product_id)
+        self.assertEqual(1, len(prices))
 
     def test_insert_product_price(self):
         price = Price.insert_product_price(product_id="1", product_price=10)
         self.assertIn(price, db.session)
-
 
 
 """
