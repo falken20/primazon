@@ -45,7 +45,7 @@ class Product(db.Model):
     product_prices = db.relationship('Price')
 
     def __repr__(self) -> str:
-        return f"ID: {self.product_id} / Product: {self.product_desc} / URL: {self.product_url}"
+        return f"ID: {self.product_id} / Product: {self.product_desc} / URL: {self.product_url} / Price: {self.product_price}"
 
     @staticmethod
     def get_all_products():

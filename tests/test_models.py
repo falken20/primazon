@@ -3,8 +3,8 @@ from flask import Flask
 
 from src.models import Price, Product, db
 
-TEST_PRODUCT = {"product_url": "url", "product_price": 1}
-TEST_PRODUCT_UPDATE = {"product_id": 1, "product_price": 10}
+TEST_PRODUCT = {"product_url": "url", "product_price": 5}
+TEST_PRODUCT_UPDATE = {"product_id": 1, "product_url": "url", "product_price": 10}
 
 class TestProduct(unittest.TestCase):
 
@@ -40,8 +40,6 @@ class TestProduct(unittest.TestCase):
 
     def test_create_product(self):
         product = Product.create_product(TEST_PRODUCT)
-        db.session.add(product)
-        db.session.commit()
         assert product in db.session
 
     def test_get_product(self):
@@ -60,9 +58,17 @@ class TestProduct(unittest.TestCase):
 
     def test_update_product(self):
         product = Product.create_product(TEST_PRODUCT)
-        print(product)
+        # Test update with higher price
         product.update_product(TEST_PRODUCT_UPDATE)
         self.assertIn(product, db.session)
+        # Test update with lower price
+        TEST_PRODUCT_UPDATE["product_price"] = 1
+        product.update_product(TEST_PRODUCT_UPDATE)
+        self.assertIn(product, db.session)        
+        # Test update with the same price
+        product.update_product(TEST_PRODUCT_UPDATE)
+        self.assertIn(product, db.session)
+
 
 
 class TestPrice(unittest.TestCase):
