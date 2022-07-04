@@ -8,28 +8,22 @@ from src.models import Product, Price, db
 TEST_PRODUCT = {"product_url": "url", "product_price": 5}
 
 
-def create_app():
+@pytest.fixture
+def setUp():
     app = Flask(__name__)
     app.config["TESTING"] = True
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
 
-    # Dynamically bind SQLAlchemy to application
-    db.init_app(app)
-    app.app_context().push()  # this does the binding
-    return app
-
-
-@pytest.fixture
-def setUp():
-    app = create_app()
-
     with app.app_context():
+        # Dynamically bind SQLAlchemy to application
+        db.init_app(app)
+        app.app_context().push()  # this does the binding
+
         db.create_all()
 
 
 @pytest.fixture
 def client():
-    app.config.update({'TESTING': True})
 
     with app.test_client() as client:
         yield client
