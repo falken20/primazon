@@ -24,7 +24,7 @@ pipenv install
 ##### Running the app
 
 ```bash
-python ./src/primazon.py
+flask run
 ```
 
 ##### Setup tests
