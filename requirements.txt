@@ -1,0 +1,16 @@
+rich
+python-dotenv
+Flask
+psycopg2-binary
+requests
+selectorlib
+beautifulsoup4
+gunicorn # For Heroku
+flask-sqlalchemy
+
+# dev-packages
+coverage
+pytest
+mock
+flake8
+autopep8
