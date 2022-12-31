@@ -14,11 +14,15 @@
 Flask web where you can save products from Amazon to observe prices along a period of time
 
 ---
+##### Deploy
+```bash
+gcloud app deploy
+```
 
 ##### Setup
 
 ```bash
-pipenv install
+pip install -r requirements.txt
 ```
 
 ##### Running the app
@@ -30,7 +34,7 @@ flask run
 ##### Setup tests
 
 ```bash
-pipenv install --dev
+pip install -r requirements-tests.txt
 ```
 
 ##### Running the tests with pytest and coverage
@@ -47,14 +51,6 @@ coverage run -m pytest -v && coverage html --omit=*/venv/*,*/tests/*
 ```bash
 PROXY=N
 LEVEL_LOG = ["DEBUG", "INFO", "WARNING", "ERROR"]
-
-# PostgreSQL database data
-#DATABASE_URL=postgres://user_primazon:Primazon-001@localhost/primazon_db
-DB_HOST=localhost
-DB_PORT=5432
-DB_DATABASE=primazon_db
-DB_USERNAME=XXXXX
-DB_PASSWORD=XXXXX
 
 # To use Supabase PostgreSQL DB
 DATABASE_URL=postgres://postgres:XXXXXX@db.rhsrwnntcqvjpgamytve.supabase.co:6543/postgres
