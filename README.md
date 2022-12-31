@@ -1,6 +1,6 @@
 <div align="center">
 <img src="./docs/static/img/logo_app.png" alt="drawing" width="400"/>
-<a href="https://richionline-portfolio.nw.r.appspot.com"><img src="https://falken-home.herokuapp.com/static/home_project/img/falken_logo.png" width=50 alt="Personal Portfolio web"></a>
+<a href="https://richionline-portfolio.nw.r.appspot.com"><img src="https://richionline-portfolio.nw.r.appspot.com/static/assets/falken_logo.ico" width=50 alt="Personal Portfolio web"></a>
 
 ![Version](https://img.shields.io/badge/version-1.2.0-blue) ![GitHub language count](https://img.shields.io/github/languages/count/falken20/primazon) ![GitHub Top languaje](https://img.shields.io/github/languages/top/falken20/primazon) ![GitHub Pipenv locked Python version](https://img.shields.io/github/pipenv/locked/python-version/falken20/primazon?logo=python&logoColor=white) ![Test coverage](https://img.shields.io/badge/test%20coverage-0%25-green) ![GitHub License](https://img.shields.io/github/license/falken20/search_extensions)
 
@@ -14,11 +14,15 @@
 Flask web where you can save products from Amazon to observe prices along a period of time
 
 ---
+##### Deploy
+```bash
+gcloud app deploy
+```
 
 ##### Setup
 
 ```bash
-pipenv install
+pip install -r requirements.txt
 ```
 
 ##### Running the app
@@ -30,21 +34,36 @@ flask run
 ##### Setup tests
 
 ```bash
-pipenv install --dev
+pip install -r requirements-tests.txt
 ```
 
 ##### Running the tests with pytest and coverage
 
 ```bash
-./scripts/coverage.sh
+./check_app.sh
 ```
 or
 ```bash
 coverage run -m pytest -v && coverage html --omit=*/venv/*,*/tests/*
 ```
+
+##### Environment vars
+```bash
+PROXY=N
+LEVEL_LOG = ["DEBUG", "INFO", "WARNING", "ERROR"]
+
+# To use Supabase PostgreSQL DB
+DATABASE_URL=postgres://postgres:XXXXXX@db.rhsrwnntcqvjpgamytve.supabase.co:6543/postgres
+
+# SQlite database data (only for local)
+DB_SQLITE_URL=sqlite://
+DB_SQLITE_NAME=primazon.db
+```
+
 ---
 
 ##### Versions
 
+1.3.0 New DB hosting
 1.2.0 New Log model integrated
 1.1.0 Adaptations to ORM SQLAlchemy

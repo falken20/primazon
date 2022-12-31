@@ -12,8 +12,8 @@ from src.logger import Log, console
 
 console.rule("Primazon")
 
-app = Flask(__name__, template_folder='../docs/templates',
-            static_folder='../docs/static')
+app = Flask(__name__, template_folder='../templates',
+            static_folder='../static')
 # Set this var to True to be able to make any web change and take the changes with refresh
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 

@@ -1,6 +1,7 @@
 import unittest
 from src import models
 
+
 class TestProduct(unittest.TestCase):
     def setUp(self) -> None:
         self.product = models.Product()
