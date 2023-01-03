@@ -4,7 +4,8 @@ from flask import Flask
 from src.models import Price, Product, db
 
 TEST_PRODUCT = {"product_url": "url", "product_price": 5}
-TEST_PRODUCT_UPDATE = {"product_id": 1, "product_url": "url", "product_price": 10}
+TEST_PRODUCT_UPDATE = {"product_id": 1,
+                       "product_url": "url", "product_price": 10}
 
 
 class TestProduct(unittest.TestCase):
@@ -49,7 +50,9 @@ class TestProduct(unittest.TestCase):
 
     def test_get_all_products(self):
         product = Product.create_product(TEST_PRODUCT)
+        self.assertIsNotNone(product)
         product = Product.create_product(TEST_PRODUCT)
+        self.assertIsNotNone(product)
         assert 2 == len(Product.get_all_products())
 
     def test_delete_product(self):
@@ -65,11 +68,10 @@ class TestProduct(unittest.TestCase):
         # Test update with lower price
         TEST_PRODUCT_UPDATE["product_price"] = 1
         product.update_product(TEST_PRODUCT_UPDATE)
-        self.assertIn(product, db.session)        
+        self.assertIn(product, db.session)
         # Test update with the same price
         product.update_product(TEST_PRODUCT_UPDATE)
         self.assertIn(product, db.session)
-
 
 
 class TestPrice(unittest.TestCase):
@@ -102,7 +104,8 @@ class TestPrice(unittest.TestCase):
             db.drop_all()
 
     def test_repr(self):
-        self.assertIn("Product price:", repr(Price(product_id="1", product_price=10)))
+        self.assertIn("Product price:", repr(
+            Price(product_id="1", product_price=10)))
 
     def test_get_prices_product(self):
         product = Product.create_product(TEST_PRODUCT)
@@ -113,11 +116,5 @@ class TestPrice(unittest.TestCase):
         price = Price.insert_product_price(product_id="1", product_price=10)
         self.assertIn(price, db.session)
 
-
     def test_print_product(self):
         self.assertIn("ID", format(self.product))
-
-    def test_author(client) -> None:
-        rv = client.get("/author/1")
-        assert rv.json == {"id": 1, "first_name": "foo", "last_name": "bar"}
-

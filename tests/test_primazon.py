@@ -1,9 +1,8 @@
-from urllib import response
 import pytest
 from flask import Flask
 
 from src.primazon import app
-from src.models import Product, Price, db
+from src.models import Product, db
 
 TEST_PRODUCT = {"product_url": "url", "product_price": 5}
 
