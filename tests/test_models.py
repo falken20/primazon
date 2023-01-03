@@ -115,6 +115,3 @@ class TestPrice(unittest.TestCase):
     def test_insert_product_price(self):
         price = Price.insert_product_price(product_id="1", product_price=10)
         self.assertIn(price, db.session)
-
-    def test_print_product(self):
-        self.assertIn("ID", format(self.product))

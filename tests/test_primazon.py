@@ -1,36 +1,22 @@
-import pytest
-from flask import Flask
+import unittest
 
-from src.primazon import app
-from src.models import Product, db
+from src import primazon
 
 TEST_PRODUCT = {"product_url": "url", "product_price": 5}
 
 
-@pytest.fixture
-def setUp():
-    app = Flask(__name__)
-    app.config["TESTING"] = True
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
+class TestPrimazon(unittest.TestCase):
 
-    with app.app_context():
-        # Dynamically bind SQLAlchemy to application
-        db.init_app(app)
-        app.app_context().push()  # this does the binding
+    def setUp(self):
+        """
+        Creates a new database for the unit test to use
+        """
+        primazon.app.config["TESTING"] = True
+        self.app = primazon.app.test_client()
 
-        db.create_all()
+    def test_home(self) -> None:
 
-
-@pytest.fixture
-def client():
-
-    with app.test_client() as client:
-        yield client
-
-
-def test_home(client) -> None:
-    # rv = client.get("/author/1")
-    # assert rv.json == {"id": 1, "first_name": "foo", "last_name": "bar"}
-    Product.create_product(TEST_PRODUCT)
-    response = client.get("/home")
-    print(response)
+        response = self.app.get("/")
+        self.assertEqual(200, response.status_code)
+        response = self.app.get("/home")
+        self.assertEqual(200, response.status_code)
