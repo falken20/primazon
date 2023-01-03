@@ -6,6 +6,7 @@ from src.models import Price, Product, db
 TEST_PRODUCT = {"product_url": "url", "product_price": 5}
 TEST_PRODUCT_UPDATE = {"product_id": 1, "product_url": "url", "product_price": 10}
 
+
 class TestProduct(unittest.TestCase):
 
     def create_app(self):
@@ -113,11 +114,10 @@ class TestPrice(unittest.TestCase):
         self.assertIn(price, db.session)
 
 
-"""
     def test_print_product(self):
         self.assertIn("ID", format(self.product))
 
     def test_author(client) -> None:
         rv = client.get("/author/1")
         assert rv.json == {"id": 1, "first_name": "foo", "last_name": "bar"}
-"""
+
