@@ -1,7 +1,9 @@
 import unittest
+from unittest.mock import patch
+from io import StringIO
 from flask import Flask
 
-from src.models import Price, Product, db
+from src.models import Price, Product, db, init_db
 
 TEST_PRODUCT = {"product_url": "url", "product_price": 5}
 TEST_PRODUCT_UPDATE = {"product_id": 1,
@@ -90,8 +92,8 @@ class TestPrice(unittest.TestCase):
         """
         Creates a new database for the unit test to use
         """
-        app = self.create_app()
-        with app.app_context():
+        self.app = self.create_app()
+        with self.app.app_context():
             db.create_all()
 
     def tearDown(self):
@@ -115,3 +117,7 @@ class TestPrice(unittest.TestCase):
     def test_insert_product_price(self):
         price = Price.insert_product_price(product_id="1", product_price=10)
         self.assertIn(price, db.session)
+
+    @patch('sys.stdin', StringIO('Y\nY'))  # Simulate user input
+    def test_init_db(self):
+        init_db(self.app)

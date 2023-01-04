@@ -184,6 +184,7 @@ def init_db(app):
 if __name__ == '__main__':
     logging.info("Preparing app vars...")
     app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL'].replace("://", "ql://", 1)
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL'].replace(
+        "://", "ql://", 1)
     db.init_app(app)
     init_db(app)
