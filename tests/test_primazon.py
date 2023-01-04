@@ -1,6 +1,4 @@
 import unittest
-from unittest.mock import patch
-from io import StringIO
 import json
 
 from src import primazon
@@ -34,7 +32,7 @@ class TestPrimazon(unittest.TestCase):
         response = self.app.get("/about/")
         self.assertEqual(200, response.status_code)
 
-    def test_add_product(self, stdout):
+    def test_add_product(self):
         response = self.app.get("/products/add/")
         self.assertEqual(200, response.status_code)
 
