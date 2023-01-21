@@ -6,7 +6,7 @@
 
 import sys
 
-from src import utils_db
+from src.without_ORM import utils_db
 from src.logger import Log
 
 

@@ -45,7 +45,7 @@ class Product(db.Model):
     product_prices = db.relationship('Price')
 
     def __repr__(self) -> str:
-        return f"ID: {self.product_id} / Product: {self.product_desc} / URL: {self.product_url}"
+        return f"ID: {self.product_id} / Product: {self.product_desc} / URL: {self.product_url} / Price: {self.product_price}"
 
     @staticmethod
     def get_all_products():
@@ -83,6 +83,8 @@ class Product(db.Model):
         if float(new_product.product_price) != 0:
             Price.insert_product_price(
                 new_product.product_id, new_product.product_price)
+
+        return new_product
 
     @staticmethod
     def update_product(values):
@@ -150,6 +152,7 @@ class Price(db.Model):
         new_price = Price(product_id=product_id, product_price=product_price)
         db.session.add(new_price)
         db.session.commit()
+        return new_price
 
 
 def init_db(app):
@@ -181,6 +184,7 @@ def init_db(app):
 if __name__ == '__main__':
     logging.info("Preparing app vars...")
     app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL'].replace("://", "ql://", 1)
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL'].replace(
+        "://", "ql://", 1)
     db.init_app(app)
     init_db(app)
