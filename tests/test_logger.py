@@ -6,16 +6,6 @@ from unittest.mock import patch
 from src import logger
 
 
-def redirect_stdout():
-    captured_output = StringIO()  # Create StringIO object
-    sys.stdout = captured_output  # and redirect stdout
-    return captured_output
-
-
-def redirect_reset():
-    sys.stdout = sys.__stdout__  # Reset redirect
-
-
 class TestLogger(unittest.TestCase):
 
     @patch('sys.stdout', new_callable=StringIO)
