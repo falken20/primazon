@@ -6,6 +6,7 @@ venv/
 *.sqlite3
 .coverage
 .coverage.*
+credentials.yaml
 
 # IDE folders
 # Mac

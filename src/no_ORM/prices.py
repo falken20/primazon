@@ -1,8 +1,12 @@
 # by Richi Rod AKA @richionline / falken20
 
+# ####################################################
+# Functions for use the database WITHOUT a ORM library
+# ####################################################
+
 import sys
 
-from src import utils_db
+from src.without_ORM import utils_db
 from src.logger import Log
 
 
