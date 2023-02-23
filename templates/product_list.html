@@ -7,7 +7,6 @@
     <table class="table table-striped" style="max-width: 600px;">
         <tbody>
         {% for product in products %}
-
             <tr style="font-size:smaller;">
                 <div class="row">
                     <td style="width: 20%; text-align: center;">
@@ -34,7 +33,6 @@
                     <td><a class="btn btn-danger btn-sm btn-block" href="{{url_for('delete_product', product_id=product.product_id)}}">Delete</a></td>
                 </div>
             </tr>
-
         {% endfor %}
         </tbody>
     </table>

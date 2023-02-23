@@ -147,10 +147,12 @@ def update_product_from_amazon(product, amazon_data):
             else:
                 product_to_update['product_min_price'] = product.product_min_price
 
+            """
             # When the price changes insert the price in prices table
             if product_to_update['product_price'] != product.product_price:
                 Price.insert_product_price(
                     product_to_update['product_id'], product_to_update['product_price'])
+            """
 
         else:
             product_to_update['product_price'] = product.product_price
@@ -193,7 +195,7 @@ def refresh_data(product_id):
             Log.info(
                 f"Product with id {product.product_id} succesfully updated")
 
-        return redirect(url_for('index'))
+        return redirect(url_for('index', message="Product succesfully updated"))
         # return redirect(url_for('edit_product', product_id=product_id))
 
     except Exception as err:
@@ -225,11 +227,11 @@ def run_process():
                 Product.update_product(product_to_update)
                 Log.debug(
                     f"Product with id {product.product_id} succesfully updated")
-
+            
         Log.info(
             "Process to [bold]refresh [bold]ALL[/bold] data product[/bold] finished succesfully")
 
-        return redirect(url_for('index'))
+        return redirect(url_for('index', message="Process finished succesfully"))
 
     except Exception as err:
         Log.error("Error in run_process method:", err, sys)
