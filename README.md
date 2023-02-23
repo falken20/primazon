@@ -63,7 +63,6 @@ DB_SQLITE_NAME=primazon.db
 ---
 
 ##### Versions
-
-1.3.0 New DB hosting
-1.2.0 New Log model integrated
-1.1.0 Adaptations to ORM SQLAlchemy
+- 1.3.0 New DB hosting
+- 1.2.0 New Log model integrated
+- 1.1.0 Adaptations to ORM SQLAlchemy

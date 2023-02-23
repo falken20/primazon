@@ -42,7 +42,8 @@ class Product(db.Model):
     product_date_added = db.Column(db.Date, default=func.now())
     product_date_updated = db.Column(db.Date)
 
-    product_prices = db.relationship('Price')
+    # product_prices = db.relationship('Price')
+    product_prices = db.relationship('Price', backref='product')
 
     def __repr__(self) -> str:
         return f"ID: {self.product_id} / Product: {self.product_desc} / URL: {self.product_url} / Price: {self.product_price}"
@@ -57,6 +58,7 @@ class Product(db.Model):
 
     @staticmethod
     def delete_product(id):
+        Price.delete_product_prices(id)
         Product.query.filter_by(product_id=id).delete()
         db.session.commit()
 
@@ -135,8 +137,8 @@ class Price(db.Model):
         nullable=False
     )
 
-    product = db.relationship(
-        'Product', backref=db.backref('t_prices', order_by=price_id), lazy=True)
+    #product = db.relationship(
+    #    'Product', backref=db.backref('t_prices', cascade='all,delete', order_by=price_id), lazy=True)
 
     def __repr__(self) -> str:
         return f"Product price: {self.product_id} - {self.product_price}"
@@ -150,9 +152,15 @@ class Price(db.Model):
     @staticmethod
     def insert_product_price(product_id, product_price):
         new_price = Price(product_id=product_id, product_price=product_price)
+        print("*****************************")
         db.session.add(new_price)
         db.session.commit()
         return new_price
+    
+    @staticmethod
+    def delete_product_prices(product_id):
+        Price.query.filter_by(product_id=product_id).delete()
+        db.session.commit()
 
 
 def init_db(app):
