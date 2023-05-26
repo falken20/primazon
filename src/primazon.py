@@ -6,7 +6,6 @@ from flask import Flask, render_template, url_for, request, redirect
 
 from . import utils
 from src.models import Product
-from src.models import Price
 from src.models import db
 from src.logger import Log, console
 
@@ -227,7 +226,7 @@ def run_process():
                 Product.update_product(product_to_update)
                 Log.debug(
                     f"Product with id {product.product_id} succesfully updated")
-            
+
         Log.info(
             "Process to [bold]refresh [bold]ALL[/bold] data product[/bold] finished succesfully")
 

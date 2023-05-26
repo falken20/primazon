@@ -3,6 +3,7 @@ from src import utils
 
 URL = "http:/"
 
+
 class TestUtils(unittest.TestCase):
     def test_proxies(self):
         r = utils.get_proxies()
