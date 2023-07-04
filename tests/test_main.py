@@ -2,7 +2,7 @@ import unittest
 import json
 from flask import Flask
 
-from src import primazon
+from src import main
 from src.models import Product, db
 
 TEST_PRODUCT = {"product_url": "url", "product_price": 5}
@@ -24,8 +24,8 @@ class TestPrimazon(unittest.TestCase):
         """
         Creates a new database for the unit test to use
         """
-        primazon.app.config["TESTING"] = True
-        self.app = primazon.app.test_client()
+        main.app.config["TESTING"] = True
+        self.app = main.app.test_client()
         db.create_all()
 
         self.info = {"product_url": "an_url",

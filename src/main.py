@@ -43,6 +43,15 @@ def index(message=""):
     return render_template('product_list.html', products=all_products, message=message)
 
 
+@app.route('/show_grouped/')
+def show_grouped(message=""):
+    Log.info("Method to show index page grouped...")
+    # Get all the products
+    all_products = Product.get_all_products()
+
+    return render_template('product_list_group.html', products=all_products, message=message)
+
+
 @app.route('/about/')
 def about():
     Log.info("Method to show [bold]about[/bold] page...")
@@ -85,7 +94,8 @@ def delete_product(product_id):
 @app.route('/products/edit/<int:product_id>')
 def edit_product(product_id):
     try:
-        Log.info(f"Method to show screen to [bold]edit product[/bold] with id: {product_id}")
+        Log.info(
+            f"Method to show screen to [bold]edit product[/bold] with id: {product_id}")
         # NO_ORM product = products.get_product(product_id)
         product = Product.get_product(product_id)
 
