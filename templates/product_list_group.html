@@ -3,12 +3,16 @@
 {% block content %}
 
 <div class="container">    
-    <div class="card-group">
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="col">
     {% for product in products %}
-        <div class="card" style="width: 33%">
+        <!--<div class="card" style="width: 33%">-->
+        <div class="card">
             <div class="card-body">
-                <img src="{{ product.product_url_photo }}" height="70">
-                <div style="font-weight: bold; font-size: medium;">{{ product.product_price }} € </div>
+                <img src="{{ product.product_url_photo }}" width="70">
+            </div>
+            <div class="card-body">
+                <small style="font-weight: bold; font-size: medium;">{{ product.product_price }} € </small>
                 <small>Min: {{ product.product_min_price }} €</small>
                 <small>Max: {{ product.product_max_price }} €</small>
             </div>
@@ -25,6 +29,7 @@
             </div>
         </div>
     {% endfor %}
+    </div>
     </div>
 </div>
 {% endblock content %}
