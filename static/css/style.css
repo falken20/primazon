@@ -14,3 +14,7 @@ body {
     font-weight: bold;
     text-align: center;
 }
+
+small {
+    font-size: xx-small;
+}
