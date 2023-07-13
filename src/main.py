@@ -31,6 +31,7 @@ db.init_app(app)
 
 GROUPED = False
 
+
 @app.route('/')
 @app.route('/home')
 @app.route('/<message>')
@@ -51,9 +52,9 @@ def show_grouped(message=""):
     all_products = Product.get_all_products()
 
     # If already were grouped, show in normal model
-    global GROUPED 
+    global GROUPED
     web_page = 'product_list.html' if GROUPED else 'product_list_group.html'
-    GROUPED= not GROUPED
+    GROUPED = not GROUPED
 
     return render_template(web_page, products=all_products, message=message)
 
