@@ -29,6 +29,7 @@ app.secret_key = os.urandom(24)
 
 db.init_app(app)
 
+GROUPED = False
 
 @app.route('/')
 @app.route('/home')
@@ -49,7 +50,12 @@ def show_grouped(message=""):
     # Get all the products
     all_products = Product.get_all_products()
 
-    return render_template('product_list_group.html', products=all_products, message=message)
+    # If already were grouped, show in normal model
+    global GROUPED 
+    web_page = 'product_list.html' if GROUPED else 'product_list_group.html'
+    GROUPED= not GROUPED
+
+    return render_template(web_page, products=all_products, message=message)
 
 
 @app.route('/about/')
