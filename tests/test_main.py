@@ -24,6 +24,7 @@ class TestPrimazon(unittest.TestCase):
         """
         Creates a new database for the unit test to use
         """
+        self.app = self.create_app()
         main.app.config["TESTING"] = True
         self.app = main.app.test_client()
         db.create_all()
