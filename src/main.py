@@ -256,34 +256,27 @@ def run_process():
 
 @app.route('/run_process_cron')
 def run_process_cron() -> None:
-    """Cron process to check Amazon prices. This url will be called from Google Cloud Scheduler
-    """
+    """ Cron process to check Amazon prices. This url will be called from Google Cloud Scheduler """
     try:
-        Log.info(
-            "Process to [bold]refresh [bold]ALL[/bold] data product[/bold]")
+        print("Starting process to refresh data Amazon products")
 
-        # NO_ORM all_products = products.get_all_products()
         all_products = Product.get_all_products()
 
         for product in all_products:
-            # NO_ORM amazon_data = utils.scrap_web(product[products.IDX_PRODUCT_URL])
             amazon_data = utils.scrap_web(product.product_url)
-            Log.debug(f"Getting [bold]Amazon[/bold] data: {amazon_data}")
+            print(f"Getting Amazon data: {amazon_data}")
 
             if amazon_data is None:
-                Log.warning(
+                print(
                     f"Impossible to get data from Amazon for the product url '{product.product_url}'")
             else:
                 product_to_update = update_product_from_amazon(
                     product, amazon_data)
-                # NO_ORM products.update_product(product_to_update)
                 Product.update_product(product_to_update)
-                Log.debug(
+                print(
                     f"Product with id {product.product_id} succesfully updated")
 
-        Log.info(
-            "Process to [bold]refresh [bold]ALL[/bold] data product[/bold] finished succesfully")
+        print("Process to refresh data Amazon product finished succesfully")
 
     except Exception as err:
-        Log.error("Error in run_process method:", err, sys)
-        return redirect(url_for('index', message="Error in cron to get data from Amazon"))
+        print("Error in run_process method:", err, sys)
