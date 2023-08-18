@@ -59,7 +59,9 @@ class TestProduct(unittest.TestCase):
 
     def test_delete_product(self):
         product = Product.create_product(TEST_PRODUCT)
+        print("1. ", product)
         product.delete_product(product.product_id)
+        print("2. ", product)
         self.assertNotIn(product, db.session)
 
     def test_update_product(self):
