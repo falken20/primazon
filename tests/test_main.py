@@ -77,9 +77,12 @@ class TestPrimazon(unittest.TestCase):
         response = self.app.post("/products/add/",
                                  data=json.dumps(dict(self.info)),
                                  content_type='application/json')
-        self.assertEqual(200, response.status_code)
+        print(response.text)
+        self.assertEqual(302, response.status_code) # Redirecting to home
+        self.assertIn("/home/Product%20deleted%20sucesfully", response.text)
 
     def test_delete_product(self):
         product = Product.create_product(TEST_PRODUCT)
         response = self.app.get(f"/products/delete/{product.product_id}")
-        self.assertEqual(200, response.status_code)
+        self.assertEqual(302, response.status_code)  # Redirecting to home
+        self.assertIn("/home/Product%20deleted%20sucesfully", response.text)
