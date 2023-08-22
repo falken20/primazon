@@ -14,13 +14,13 @@ class TestUtils(unittest.TestCase):
         self.assertIsNone(r)
 
     def test_scrap_by_selectorlib(self):
-        r = utils.scrap_by_selectorlib(URL)
+        utils.scrap_by_selectorlib(URL)
         # self.assertIsNotNone(r)
         # Simply check if call function
         self.assertRaises(AssertionError)
 
     def test_scrap_by_beautifulsoup(self):
-        r = utils.scrap_by_beautifulsoup(requests.get(URL))
+        utils.scrap_by_beautifulsoup(requests.get(URL))
         # self.assertIsNotNone(r)
         # Simply check if call function
         self.assertRaises(AssertionError)
