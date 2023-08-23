@@ -76,13 +76,32 @@ class TestPrimazon(unittest.TestCase):
 
         response = self.app.post("/products/add/",
                                  data=json.dumps(dict(self.info)),
-                                 content_type='application/json')
-        print(response.text)
-        self.assertEqual(302, response.status_code) # Redirecting to home
-        self.assertIn("/home/Product%20deleted%20sucesfully", response.text)
+                                 follow_redirects=True,
+                                 # content_type='application/json',
+                                 headers={
+                                     "Content-Type": "application/x-www-form-urlencoded"}
+                                 )
+        self.assertEqual(200, response.status_code)
+
+        response = self.app.post("/products/add/",
+                                 data=json.dumps(dict(self.info)),
+                                 headers={
+                                     "Content-Type": "application/x-www-form-urlencoded"}
+                                 )
+        self.assertEqual(302, response.status_code)
 
     def test_delete_product(self):
         product = Product.create_product(TEST_PRODUCT)
         response = self.app.get(f"/products/delete/{product.product_id}")
         self.assertEqual(302, response.status_code)  # Redirecting to home
         self.assertIn("/home/Product%20deleted%20sucesfully", response.text)
+
+    def test_show_grouped(self) -> None:
+        response = self.app.get("/show_grouped", follow_redirects=True)
+        print(response.status_code)
+        self.assertEqual(200, response.status_code)  # Redirecting
+
+    def test_edit_product(self):
+        product = Product.create_product(TEST_PRODUCT)
+        response = self.app.get(f"/products/edit/{product.product_id}", follow_redirects=True)
+        self.assertEqual(200, response.status_code)  # Redirecting to home
