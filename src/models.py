@@ -137,7 +137,7 @@ class Price(db.Model):
         nullable=False
     )
 
-    #product = db.relationship(
+    # product = db.relationship(
     #    'Product', backref=db.backref('t_prices', cascade='all,delete', order_by=price_id), lazy=True)
 
     def __repr__(self) -> str:
@@ -156,7 +156,7 @@ class Price(db.Model):
         db.session.add(new_price)
         db.session.commit()
         return new_price
-    
+
     @staticmethod
     def delete_product_prices(product_id):
         Price.query.filter_by(product_id=product_id).delete()

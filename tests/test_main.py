@@ -2,7 +2,7 @@ import unittest
 import json
 from flask import Flask
 
-from src import primazon
+from src import main
 from src.models import Product, db
 
 TEST_PRODUCT = {"product_url": "url", "product_price": 5}
@@ -24,8 +24,9 @@ class TestPrimazon(unittest.TestCase):
         """
         Creates a new database for the unit test to use
         """
-        primazon.app.config["TESTING"] = True
-        self.app = primazon.app.test_client()
+        self.app = self.create_app()
+        main.app.config["TESTING"] = True
+        self.app = main.app.test_client()
         db.create_all()
 
         self.info = {"product_url": "an_url",
@@ -75,10 +76,41 @@ class TestPrimazon(unittest.TestCase):
 
         response = self.app.post("/products/add/",
                                  data=json.dumps(dict(self.info)),
-                                 content_type='application/json')
+                                 follow_redirects=True,
+                                 # content_type='application/json',
+                                 headers={
+                                     "Content-Type": "application/x-www-form-urlencoded"}
+                                 )
         self.assertEqual(200, response.status_code)
+
+        response = self.app.post("/products/add/",
+                                 data=json.dumps(dict(self.info)),
+                                 headers={
+                                     "Content-Type": "application/x-www-form-urlencoded"}
+                                 )
+        self.assertEqual(302, response.status_code)
 
     def test_delete_product(self):
         product = Product.create_product(TEST_PRODUCT)
         response = self.app.get(f"/products/delete/{product.product_id}")
+        self.assertEqual(302, response.status_code)  # Redirecting to home
+        self.assertIn("/home/Product%20deleted%20sucesfully", response.text)
+
+    def test_show_grouped(self) -> None:
+        response = self.app.get("/show_grouped", follow_redirects=True)
+        print(response.status_code)
+        self.assertEqual(200, response.status_code)  # Redirecting
+
+    def test_edit_product(self):
+        product = Product.create_product(TEST_PRODUCT)
+        response = self.app.get(f"/products/edit/{product.product_id}", follow_redirects=True)
+        self.assertEqual(200, response.status_code)  # Redirecting to home
+
+    def test_update_product(self):
+        response = self.app.post("/products/update",
+                                 data=json.dumps(dict(self.info)),
+                                 follow_redirects=True,
+                                 headers={
+                                     "Content-Type": "application/x-www-form-urlencoded"}
+                                 )
         self.assertEqual(200, response.status_code)

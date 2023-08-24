@@ -6,7 +6,6 @@ from flask import Flask, render_template, url_for, request, redirect
 
 from . import utils
 from src.models import Product
-from src.models import Price
 from src.models import db
 from src.logger import Log, console
 
@@ -30,6 +29,8 @@ app.secret_key = os.urandom(24)
 
 db.init_app(app)
 
+GROUPED = False
+
 
 @app.route('/')
 @app.route('/home')
@@ -42,6 +43,20 @@ def index(message=""):
     all_products = Product.get_all_products()
 
     return render_template('product_list.html', products=all_products, message=message)
+
+
+@app.route('/show_grouped/')
+def show_grouped(message=""):
+    Log.info("Method to show index page grouped...")
+    # Get all the products
+    all_products = Product.get_all_products()
+
+    # If already were grouped, show in normal model
+    global GROUPED
+    web_page = 'product_list.html' if GROUPED else 'product_list_group.html'
+    GROUPED = not GROUPED
+
+    return render_template(web_page, products=all_products, message=message)
 
 
 @app.route('/about/')
@@ -86,7 +101,8 @@ def delete_product(product_id):
 @app.route('/products/edit/<int:product_id>')
 def edit_product(product_id):
     try:
-        Log.info(f"Method to show screen to [bold]edit product[/bold] with id: {product_id}")
+        Log.info(
+            f"Method to show screen to [bold]edit product[/bold] with id: {product_id}")
         # NO_ORM product = products.get_product(product_id)
         product = Product.get_product(product_id)
 
@@ -227,7 +243,7 @@ def run_process():
                 Product.update_product(product_to_update)
                 Log.debug(
                     f"Product with id {product.product_id} succesfully updated")
-            
+
         Log.info(
             "Process to [bold]refresh [bold]ALL[/bold] data product[/bold] finished succesfully")
 
@@ -236,3 +252,31 @@ def run_process():
     except Exception as err:
         Log.error("Error in run_process method:", err, sys)
         return redirect(url_for('index', message="Error in cron to get data from Amazon"))
+
+
+@app.route('/run_process_cron')
+def run_process_cron() -> None:
+    """ Cron process to check Amazon prices. This url will be called from Google Cloud Scheduler """
+    try:
+        print("Starting process to refresh data Amazon products")
+
+        all_products = Product.get_all_products()
+
+        for product in all_products:
+            amazon_data = utils.scrap_web(product.product_url)
+            print(f"Getting Amazon data: {amazon_data}")
+
+            if amazon_data is None:
+                print(
+                    f"Impossible to get data from Amazon for the product url '{product.product_url}'")
+            else:
+                product_to_update = update_product_from_amazon(
+                    product, amazon_data)
+                Product.update_product(product_to_update)
+                print(
+                    f"Product with id {product.product_id} succesfully updated")
+
+        print("Process to refresh data Amazon product finished succesfully")
+
+    except Exception as err:
+        print("Error in run_process method:", err, sys)
