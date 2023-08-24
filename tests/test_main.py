@@ -105,3 +105,12 @@ class TestPrimazon(unittest.TestCase):
         product = Product.create_product(TEST_PRODUCT)
         response = self.app.get(f"/products/edit/{product.product_id}", follow_redirects=True)
         self.assertEqual(200, response.status_code)  # Redirecting to home
+
+    def test_update_product(self):
+        response = self.app.post("/products/update",
+                                 data=json.dumps(dict(self.info)),
+                                 follow_redirects=True,
+                                 headers={
+                                     "Content-Type": "application/x-www-form-urlencoded"}
+                                 )
+        self.assertEqual(200, response.status_code)
