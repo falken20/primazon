@@ -252,3 +252,31 @@ def run_process():
     except Exception as err:
         Log.error("Error in run_process method:", err, sys)
         return redirect(url_for('index', message="Error in cron to get data from Amazon"))
+
+
+@app.route('/run_process_cron')
+def run_process_cron() -> None:
+    """ Cron process to check Amazon prices. This url will be called from Google Cloud Scheduler """
+    try:
+        print("Starting process to refresh data Amazon products")
+
+        all_products = Product.get_all_products()
+
+        for product in all_products:
+            amazon_data = utils.scrap_web(product.product_url)
+            print(f"Getting Amazon data: {amazon_data}")
+
+            if amazon_data is None:
+                print(
+                    f"Impossible to get data from Amazon for the product url '{product.product_url}'")
+            else:
+                product_to_update = update_product_from_amazon(
+                    product, amazon_data)
+                Product.update_product(product_to_update)
+                print(
+                    f"Product with id {product.product_id} succesfully updated")
+
+        print("Process to refresh data Amazon product finished succesfully")
+
+    except Exception as err:
+        print("Error in run_process method:", err, sys)

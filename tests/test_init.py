@@ -2,7 +2,7 @@ import src
 
 
 def test_get_version():
-    assert src.__version__ == "1.3.0"
+    assert src.__version__ == "1.5.0"
 
 
 def test_get_name():
