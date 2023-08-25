@@ -105,7 +105,8 @@ def scrap_by_beautifulsoup(page):
         Log.info("Method scrap_by_beautifulsoup to scrap the Amazon page...")
         soup = BeautifulSoup(page.content, "html.parser")
 
-        Log.debug(soup.find(id="productTitle").text.strip())  # By DOM element id
+        # By DOM element id
+        Log.debug(soup.find(id="productTitle").text.strip())
         # By DOM element class
         Log.debug(soup.find(class_="a-offscreen").text.strip())
         Log.debug(soup.find(class_="a-icon-alt").text.strip())
@@ -139,6 +140,8 @@ def scrap_web(url):
             Log.debug("Don't use proxy to access to Amazon")
             page = requests.get(url, headers=headers)
 
+        Log.debug(f"Status code page: {page.status_code}")
+
         if page.status_code > 500:
             Log.debug("Page %s must have been blocked by Amazon as the status code was %d" % (
                 url, page.status_code))
@@ -148,9 +151,8 @@ def scrap_web(url):
                 raise Exception(
                     "Page was blocked by Amazon. Please try using better proxies or try later")
 
-        Log.debug(f"Status code page: {page.status_code}")
         data_product = scrap_by_selectorlib(page)
-        scrap_by_beautifulsoup(page)
+        # scrap_by_beautifulsoup(page)
 
         Log.info("Process scrap_web finished")
 
