@@ -151,7 +151,6 @@ def scrap_web(url):
                     f"Page Status Code: {page.status_code}")
 
         Log.info(f"Amazon status code page: {page.status_code}")
-        Log.info(f"Amazon back page text: {page.text}")
         data_product = scrap_by_selectorlib(page)
         # scrap_by_beautifulsoup(page)
 
