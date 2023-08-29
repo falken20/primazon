@@ -147,8 +147,8 @@ def scrap_web(url):
         else:
             if "To discuss automated access to Amazon data please contact api-services-support@amazon.com" in page.text:
                 raise Exception(
-                    f"Page was blocked by Amazon. Please try using better proxies or try later. " +
-                    "Page Status Code: {page.status_code}")
+                    "Page was blocked by Amazon. Please try using better proxies or try later. " +
+                    f"Page Status Code: {page.status_code}")
 
         Log.info(f"Amazon status code page: {page.status_code}")
         Log.info(f"Amazon back page text: {page.text}")
