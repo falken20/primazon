@@ -2,7 +2,7 @@
 
 import sys
 import os
-from flask import Flask, render_template, url_for, request, redirect
+from flask import Flask, render_template, url_for, request, redirect, jsonify
 
 from . import utils
 from src.models import Product
@@ -277,6 +277,10 @@ def run_process_cron() -> None:
                     f"Product with id {product.product_id} succesfully updated")
 
         print("Process to refresh data Amazon product finished succesfully")
+        return jsonify({"message": "Process to refresh data Amazon product finished succesfully"})
 
     except Exception as err:
-        print("Error in run_process method:", err, sys)
+        print("Error in run_process_cron method:", err, sys)
+        return jsonify({"message": "Error in run_process_cron",
+                        "Error": err,
+                        "Detail": sys})
