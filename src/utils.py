@@ -140,8 +140,6 @@ def scrap_web(url):
             Log.debug("Don't use proxy to access to Amazon")
             page = requests.get(url, headers=headers)
 
-        Log.debug(f"Status code page: {page.status_code}")
-
         if page.status_code > 500:
             Log.debug("Page %s must have been blocked by Amazon as the status code was %d" % (
                 url, page.status_code))
@@ -152,7 +150,7 @@ def scrap_web(url):
                     "Page was blocked by Amazon. Please try using better proxies or try later. " +
                     f"Page Status Code: {page.status_code}")
 
-        Log.debug(f"Status code page: {page.status_code}")
+        Log.info(f"Amazon status code page: {page.status_code}")
         data_product = scrap_by_selectorlib(page)
         # scrap_by_beautifulsoup(page)
 
