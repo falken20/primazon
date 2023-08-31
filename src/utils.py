@@ -150,6 +150,7 @@ def scrap_web(url):
                     "Page was blocked by Amazon. Please try using better proxies or try later. " +
                     f"Page Status Code: {page.status_code}")
 
+        # Log.debug(f"Amazon back page text: \n{page.text}")
         Log.info(f"Amazon status code page: {page.status_code}")
         data_product = scrap_by_selectorlib(page)
         # scrap_by_beautifulsoup(page)
@@ -160,7 +161,8 @@ def scrap_web(url):
 
     except Exception as err:
         Log.error("Error scrapping url web:", err, sys)
-        raise Exception(err)
+        # raise Exception(err)
+        return None
 
 
 if __name__ == "__main__":
