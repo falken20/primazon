@@ -106,7 +106,7 @@ def scrap_by_beautifulsoup(page):
         soup = BeautifulSoup(page.content, "html.parser")
 
         # By DOM element id
-        Log.debug(soup.find(id="productTitle").text.strip())  
+        Log.debug(soup.find(id="productTitle").text.strip())
         # By DOM element class
         Log.debug(soup.find(class_="a-offscreen").text.strip())
         Log.debug(soup.find(class_="a-icon-alt").text.strip())

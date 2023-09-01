@@ -98,7 +98,6 @@ class TestPrimazon(unittest.TestCase):
 
     def test_show_grouped(self) -> None:
         response = self.app.get("/show_grouped", follow_redirects=True)
-        print(response.status_code)
         self.assertEqual(200, response.status_code)  # Redirecting
 
     def test_edit_product(self):
@@ -114,3 +113,9 @@ class TestPrimazon(unittest.TestCase):
                                      "Content-Type": "application/x-www-form-urlencoded"}
                                  )
         self.assertEqual(200, response.status_code)
+
+    def test_run_process(self):
+        response = self.app.get("/run_process", follow_redirects=True)
+        self.assertEqual(200, response.status_code)  # Redirecting
+        response = self.app.get("/run_process_cron", follow_redirects=True)
+        self.assertEqual(200, response.status_code)  # Redirecting
