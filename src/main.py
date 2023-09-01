@@ -258,29 +258,29 @@ def run_process():
 def run_process_cron() -> None:
     """ Cron process to check Amazon prices. This url will be called from Google Cloud Scheduler """
     try:
-        print("Starting process to refresh data Amazon products")
+        Log.info("Starting process to refresh data Amazon products")
 
         all_products = Product.get_all_products()
 
         for product in all_products:
             amazon_data = utils.scrap_web(product.product_url)
-            print(f"Getting Amazon data: {amazon_data}")
+            Log.info(f"Getting Amazon data: {amazon_data}")
 
             if amazon_data is None:
-                print(
+                Log.warning(
                     f"Impossible to get data from Amazon for the product url '{product.product_url}'")
             else:
                 product_to_update = update_product_from_amazon(
                     product, amazon_data)
                 Product.update_product(product_to_update)
-                print(
+                Log.info(
                     f"Product with id {product.product_id} succesfully updated")
 
-        print("Process to refresh data Amazon product finished succesfully")
+        Log.info("Process to refresh data Amazon product finished succesfully")
         return jsonify({"message": "Process to refresh data Amazon product finished succesfully"})
 
     except Exception as err:
-        print("Error in run_process_cron method:", err, sys)
+        Log.error("Error in run_process_cron method:", err, sys)
         return jsonify({"message": "Error in run_process_cron",
                         "Error": err,
                         "Detail": sys})
