@@ -22,33 +22,29 @@ from logger import Log
 # Option 1. Initiate a secure SMTP using SMTP_SSL() ########################################
 
 
-def send_email_SMTP_SSL():
+def send_email_SMTP_SSL(smtp_server: str, sender_email: str, password: str, receiver_email: str, message: str) -> None:
     port = 465  # For SSL
-    # Create a secure SSL context
-    context = ssl.create_default_context()
+    context = ssl.create_default_context()  # Create a secure SSL context
 
-    with smtplib.SMTP_SSL(host=mail_config.smtp_server, port=port, context=context) as server:
-        server.login(mail_config.sender_email, mail_config.password)
-        server.sendmail(mail_config.sender_email,
-                        mail_config.receiver_email, message)
+    with smtplib.SMTP_SSL(host=smtp_server, port=port, context=context) as server:
+        server.login(sender_email, password)
+        server.sendmail(sender_email, receiver_email, message)
 
 
 # Option 2. Initiate a secure SMTP using .starttls() ########################################
 
-def send_email_starttls():
+def send_email_starttls(smtp_server: str, sender_email: str, password: str, receiver_email: str, message: str) -> None:
     port = 587  # For .starttls
-    # Create a secure SSL context
-    context = ssl.create_default_context()
+    context = ssl.create_default_context()  # Create a secure SSL context
 
     # Try to log in to server and send email
     try:
-        server = smtplib.SMTP(mail_config.smtp_server, port)
+        server = smtplib.SMTP(smtp_server, port)
         server.ehlo()  # Can be omitted
         server.starttls(context=context)  # Secure the connection
         server.ehlo()  # Can be omitted
-        server.login(mail_config.sender_email, mail_config.password)
-        server.sendmail(mail_config.sender_email,
-                        mail_config.receiver_email, message)
+        server.login(sender_email, password)
+        server.sendmail(sender_email, receiver_email, message)
     except Exception as e:
         # Print any error messages to stdout
         print(e)
@@ -77,11 +73,8 @@ def send_email_HTML_plaintext():
     # Create secure connection with server and send email
     context = ssl.create_default_context()
 
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-        server.login(mail_config.sender_email, mail_config.password)
-        server.sendmail(
-            mail_config.sender_email, mail_config.receiver_email, message.as_string()
-        )
+    send_email_SMTP_SSL(mail_config.smtp_server, mail_config.sender_email, mail_config.password,
+                        mail_config.receiver_email, message.as_string())
 
 
 # Email with attachment file ########################################
@@ -115,11 +108,7 @@ def send_email_attachment():
     message.attach(part)
     text = message.as_string()
 
-    # Log in to server using secure context and send email
-    context = ssl.create_default_context()
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-        server.login(mail_config.sender_email, mail_config.password)
-        server.sendmail(mail_config.sender_email,
+    send_email_SMTP_SSL(mail_config.smtp_server, mail_config.sender_email, mail_config.password,
                         mail_config.receiver_email, text)
 
 
