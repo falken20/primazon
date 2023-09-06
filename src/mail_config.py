@@ -1,10 +1,9 @@
 # by Richi Rod AKA @richionline / falken20
 
 smtp_server = "smtp.gmail.com"
-sender_email = "my@gmail.com"
+sender_email = "ricardorg20@gmail.com"
 receiver_email = "ricardorg20@gmail.com"
-password = input("Type your password and press enter (SMTP_SSL() demo): ")
-filename = "document.pdf"  # In same directory as script
+filename = "mail.py"  # In same directory as script
 
 """The message string starts with "Subject: Hi there" followed by two newlines (\n).
 This ensures Hi there shows up as the subject of the email, and the text following the

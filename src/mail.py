@@ -9,6 +9,7 @@ from email.mime.multipart import MIMEMultipart
 # To send attachments (binaty files) is necesary to be encoded before
 from email import encoders
 from email.mime.base import MIMEBase
+import sys
 
 import mail_config
 from logger import Log
@@ -53,16 +54,16 @@ def send_email_starttls(smtp_server: str, sender_email: str, password: str, rece
 
 
 # Email in HTML and plain-text versions ########################################
-message = MIMEMultipart("alternative")
-message["Subject"] = "multipart test"
-message["From"] = mail_config.sender_email
-message["To"] = mail_config.receiver_email
+def send_email_HTML_plaintext(smtp_server: str, sender_email: str, password: str,
+                              receiver_email: str, message_plaintext: str, message_html: str):
+    message = MIMEMultipart("alternative")
+    message["Subject"] = "multipart test"
+    message["From"] = sender_email
+    message["To"] = receiver_email
 
-
-def send_email_HTML_plaintext():
     # Turn versions plain-text and HTML into MIMEText objects
-    part_plain = MIMEText(mail_config.message_plaintext, "plain")
-    part_html = MIMEText(mail_config.message_html, "html")
+    part_plain = MIMEText(message_plaintext, "plain")
+    part_html = MIMEText(message_html, "html")
 
     # Add parts to MIMEMultipart message
     # IMPORTANT: The email client will try to render the last part first
@@ -70,26 +71,21 @@ def send_email_HTML_plaintext():
     # IMPORTANT: The email client will try to render the last part first
     message.attach(part_html)
 
-    # Create secure connection with server and send email
-    context = ssl.create_default_context()
-
-    send_email_SMTP_SSL(mail_config.smtp_server, mail_config.sender_email, mail_config.password,
-                        mail_config.receiver_email, message.as_string())
+    send_email_SMTP_SSL(smtp_server, sender_email, password,
+                        receiver_email, message.as_string())
 
 
 # Email with attachment file ########################################
-message = MIMEMultipart()
-message["From"] = mail_config.sender_email
-message["To"] = mail_config.receiver_email
-message["Subject"] = "An email with attachment from Python"
-# Add body to email
-body = "This is an email with attachment sent from Python"
-message.attach(MIMEText(body, "plain"))
+def send_email_attachment(smtp_server: str, sender_email: str, password: str,
+                          receiver_email: str, filename: str, message: str):
+    message = MIMEMultipart()
+    message["From"] = sender_email
+    message["To"] = receiver_email
+    message["Subject"] = "An email with attachment from Python"
+    message.attach(MIMEText(message, "plain"))
 
-
-def send_email_attachment():
     # Open PDF file in binary mode
-    with open(mail_config.filename, "rb") as attachment:
+    with open(filename, "rb") as attachment:
         # Add file as application/octet-stream
         # Email client can usually download this automatically as attachment
         part = MIMEBase("application", "octet-stream")
@@ -101,16 +97,35 @@ def send_email_attachment():
     # Add header as key/value pair to attachment part
     part.add_header(
         "Content-Disposition",
-        f"attachment; filename= {mail_config.filename}",
+        f"attachment; filename= {filename}",
     )
 
     # Add attachment to message and convert message to string
     message.attach(part)
     text = message.as_string()
 
-    send_email_SMTP_SSL(mail_config.smtp_server, mail_config.sender_email, mail_config.password,
-                        mail_config.receiver_email, text)
+    send_email_SMTP_SSL(smtp_server, sender_email,
+                        password, receiver_email, text)
 
 
 if __name__ == "__main__":
     Log.info("MODULE FOR TESTING SEND EMAILS")
+
+    password = input("Type your password and press enter: ")
+    try:
+        Log.info("1. Testing send email with starttls method")
+        send_email_starttls(mail_config.smtp_server, mail_config.sender_email,
+                            password, mail_config.receiver_email, "Testing starttls")
+
+        Log.info("2. Testing send email with SMTP_SSL: Plain text and html")
+        send_email_HTML_plaintext(mail_config.smtp_server, mail_config.sender_email,
+                                  password, mail_config.receiver_email,
+                                  mail_config.message_plaintext, mail_config.message_html)
+
+        Log.info("3. Testing send email with SMTP_SSL: With attachment")
+        send_email_attachment(mail_config.smtp_server, mail_config.sender_email,
+                              password, mail_config.receiver_email,
+                              mail_config.filename, mail_config.message_plaintext)
+
+    except Exception as err:
+        Log.error("Error testing send emails", err, sys)
