@@ -19,23 +19,48 @@ from logger import Log
 # them and prints their content to the console. You can start a local SMTP debugging server by typing
 # the following in Command Prompt:
 # $ python -m smtpd -c DebuggingServer -n localhost:1025
+# For testing with local smtp you have to use localhost as smtp_server and port 1025 rather than
+# port 465 (SMTO_SSL) or 587  (starttls)
+
+LOCAL_TESTING = True
+LOCAL_SMTP_SERVER = "localhost"
+LOCAL_PORT = 1025
+
+
+# Option Local SMTP server localhost
+def send_email_local_smtp(smtp_server: str, port: int, sender_email: str, receiver_email: str, message: str) -> None:
+    try:
+        server = smtplib.SMTP(smtp_server, port)
+        server.sendmail(sender_email, receiver_email, message)
+        server.quit()
+
+    except Exception as err:
+        Log.error("Error in local SMTP method", err, sys)
+
 
 # Option 1. Initiate a secure SMTP using SMTP_SSL() ########################################
-
-
 def send_email_SMTP_SSL(smtp_server: str, sender_email: str, password: str, receiver_email: str, message: str) -> None:
-    port = 465  # For SSL
-    context = ssl.create_default_context()  # Create a secure SSL context
+    try:
+        port = 465
 
-    with smtplib.SMTP_SSL(host=smtp_server, port=port, context=context) as server:
-        server.login(sender_email, password)
-        server.sendmail(sender_email, receiver_email, message)
+        Log.info(
+            f"Testing SMTP_SSL in port {port} and SMTP server {smtp_server}")
+
+        context = ssl.create_default_context()  # Create a secure SSL context
+
+        with smtplib.SMTP_SSL(host=smtp_server, port=port, context=context) as server:
+            server.login(sender_email, password)
+            server.sendmail(sender_email, receiver_email, message)
+    except Exception as err:
+        Log.error("Error in SMTP_SSL method", err, sys)
 
 
 # Option 2. Initiate a secure SMTP using .starttls() ########################################
-
 def send_email_starttls(smtp_server: str, sender_email: str, password: str, receiver_email: str, message: str) -> None:
-    port = 587  # For .starttls
+    port = 587
+
+    Log.info(f"Testing STARTTLS in port {port} and SMTP server {smtp_server}")
+
     context = ssl.create_default_context()  # Create a secure SSL context
 
     # Try to log in to server and send email
@@ -111,18 +136,30 @@ def send_email_attachment(smtp_server: str, sender_email: str, password: str,
 if __name__ == "__main__":
     Log.info("MODULE FOR TESTING SEND EMAILS")
 
-    password = input("Type your password and press enter: ")
     try:
+        password = None
+        if LOCAL_TESTING:
+            Log.info("Testing with local SMTP server...")
+            send_email_local_smtp(LOCAL_SMTP_SERVER, LOCAL_PORT, mail_config.sender_email,
+                                  mail_config.receiver_email, "Testing local SMTP")
+            exit()
+        else:
+            password = input("Type your password mail and press enter: ")
+
         Log.info("1. Testing send email with starttls method")
         send_email_starttls(mail_config.smtp_server, mail_config.sender_email,
                             password, mail_config.receiver_email, "Testing starttls")
 
-        Log.info("2. Testing send email with SMTP_SSL: Plain text and html")
+        Log.info("2. Testing send email with SMTP_SSL method")
+        send_email_SMTP_SSL(mail_config.smtp_server, mail_config.sender_email,
+                            password, mail_config.receiver_email, "Testing SMTP_SSL")
+
+        Log.info("3. Testing send email with SMTP_SSL: Plain text and html")
         send_email_HTML_plaintext(mail_config.smtp_server, mail_config.sender_email,
                                   password, mail_config.receiver_email,
                                   mail_config.message_plaintext, mail_config.message_html)
 
-        Log.info("3. Testing send email with SMTP_SSL: With attachment")
+        Log.info("4. Testing send email with SMTP_SSL: With attachment")
         send_email_attachment(mail_config.smtp_server, mail_config.sender_email,
                               password, mail_config.receiver_email,
                               mail_config.filename, mail_config.message_plaintext)
