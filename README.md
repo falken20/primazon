@@ -58,6 +58,10 @@ DATABASE_URL=postgres://postgres:XXXXXX@db.rhsrwnntcqvjpgamytve.supabase.co:6543
 # SQlite database data (only for local)
 DB_SQLITE_URL=sqlite://
 DB_SQLITE_NAME=primazon.db
+
+# MailJet keys
+MAILJET_APIKEY_PUBLIC=...
+MAILJET_APIKEY_PRIVATE=...
 ```
 
 ---
@@ -74,3 +78,4 @@ DB_SQLITE_NAME=primazon.db
 ##### Learning tips
 - Send emails with smtplib and ssl
 - Scraping web with selectorlib and BeautifulSoup
+- Use MailJet as free SMTP server (mailjet-apiv3-python)
