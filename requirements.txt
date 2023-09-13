@@ -7,6 +7,7 @@ selectorlib
 beautifulsoup4
 gunicorn # For Heroku
 flask-sqlalchemy
+mailjet_rest # Mail package API
 
 # dev-packages
 coverage

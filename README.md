@@ -62,6 +62,7 @@ DB_SQLITE_NAME=primazon.db
 # MailJet keys
 MAILJET_APIKEY_PUBLIC=...
 MAILJET_APIKEY_PRIVATE=...
+RECEIVER_EMAIL=...
 ```
 
 ---
@@ -78,4 +79,4 @@ MAILJET_APIKEY_PRIVATE=...
 ##### Learning tips
 - Send emails with smtplib and ssl
 - Scraping web with selectorlib and BeautifulSoup
-- Use MailJet as free SMTP server (mailjet-apiv3-python)
+- Use MailJet as free SMTP server (mailjet-apiv3-python): https://dev.mailjet.com/
