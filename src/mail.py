@@ -12,7 +12,7 @@ from email.mime.base import MIMEBase
 import sys
 
 import mail_config
-from logger import Log
+from src.logger import Log
 
 # You can test email functionality by running a local SMTP debugging server, using the smtpd module
 # that comes pre-installed with Python. Rather than sending emails to the specified address, it discards
