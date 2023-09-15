@@ -11,5 +11,5 @@ def test_mailjet_vars():
 
 
 def test_mailjet_api():
-    result = mj_api.send_email(text_part="Testing sending mail")
+    result = mj_api.send_email(receiver_email="test@test.com", text_part="Testing sending mail")
     assert result is True

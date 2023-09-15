@@ -85,6 +85,7 @@ class TestPrimazon(unittest.TestCase):
 
         response = self.app.post("/products/add/",
                                  data=json.dumps(dict(self.info)),
+                                 follow_redirects=False,
                                  headers={
                                      "Content-Type": "application/x-www-form-urlencoded"}
                                  )

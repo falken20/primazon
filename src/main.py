@@ -5,6 +5,7 @@ import os
 from flask import Flask, render_template, url_for, request, redirect, jsonify
 
 from . import utils
+from . import mailjet_api
 from src.models import Product
 from src.models import db
 from src.logger import Log, console
@@ -262,6 +263,7 @@ def run_process_cron() -> None:
 
         all_products = Product.get_all_products()
 
+        text_mail = ""
         for product in all_products:
             amazon_data = utils.scrap_web(product.product_url)
             Log.info(f"Getting Amazon data: {amazon_data}")
@@ -272,11 +274,19 @@ def run_process_cron() -> None:
             else:
                 product_to_update = update_product_from_amazon(
                     product, amazon_data)
-                Product.update_product(product_to_update)
+                update_price = Product.update_product(product_to_update)
                 Log.info(
                     f"Product with id {product.product_id} succesfully updated")
+                if update_price:
+                    text_mail += f"* Product {product.product_desc} has changed its price: {product.product_price}\n"
 
         Log.info("Process to refresh data Amazon product finished succesfully")
+
+        # Check if some price has changed and send email
+        if text_mail != "":
+            text_mail = "Next products has changed their prices:\n" + text_mail
+            mailjet_api.send_email(text_part=text_mail)
+
         return jsonify({"message": "Process to refresh data Amazon product finished succesfully"})
 
     except Exception as err:

@@ -89,7 +89,7 @@ class Product(db.Model):
         return new_product
 
     @staticmethod
-    def update_product(values):
+    def update_product(values) -> bool:
         product_to_update = Product.get_product(values.get('product_id'))
 
         product_to_update.product_date_updated = datetime.datetime.now()
@@ -122,6 +122,9 @@ class Product(db.Model):
         if update_price:
             Price.insert_product_price(
                 product_to_update.product_id, product_to_update.product_price)
+
+        # To know if the price has been updated
+        return update_price
 
 
 class Price(db.Model):

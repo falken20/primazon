@@ -4,7 +4,7 @@
 echo "***** Unit Test *****"
 coverage run -m pytest -v 
 echo "***** Coverage tests *****"
-coverage report --omit="*/tests/*,*/venv/*" -m ./src/*.py
+coverage report --omit="*/tests/*,*/venv/*,*/src/mail.py" -m ./src/*.py
 
 # Coverage report in html
 # coverage run -m pytest -v && coverage html --omit="*/test/*,*/venv/*"

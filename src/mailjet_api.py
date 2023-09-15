@@ -11,12 +11,13 @@ api_key = os.environ['MAILJET_APIKEY_PUBLIC']
 api_secret = os.environ['MAILJET_APIKEY_PRIVATE']
 api_version = 'v3.1'
 receiver_email = os.environ['RECEIVER_EMAIL']
+sender_email = os.environ.get('SENDER_EMAIL', receiver_email)
 text_part_default = "Several Amazon products are lowered their price."
 
 data = {
     'Messages': [{
         "From": {
-            "Email": "primazon@mailjet.com",
+            "Email": sender_email,
             "Name": "Primazon Alert"
         },
         "To": [{
@@ -49,4 +50,3 @@ def send_email(receiver_email: str = receiver_email, text_part: str = "") -> boo
         print(err)
         Log.error("Error sneding email by mailjet API", err, sys)
         return False
-
