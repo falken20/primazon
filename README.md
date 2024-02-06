@@ -53,7 +53,7 @@ PROXY=N
 LEVEL_LOG = ["DEBUG", "INFO", "WARNING", "ERROR"]
 
 # To use Supabase PostgreSQL DB
-DATABASE_URL=postgres://postgres:XXXXXX@db.rhsrwnntcqvjpgamytve.supabase.co:6543/postgres
+DATABASE_URL=
 
 # SQlite database data (only for local)
 DB_SQLITE_URL=sqlite://
